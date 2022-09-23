@@ -164,39 +164,46 @@ class Registration(db.Model):
 
 
 #UserType Schema
-class UserTypeSchema(ma.Schema):
+class UserTypeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = UserType
+        include_fk= True
 
 #Staff Schema
-class StaffSchema(ma.Schema):
+class StaffSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Staff
+        include_fk =True
 
 #LearningJourney Schema
-class LearningJourneySchema(ma.Schema):
+class LearningJourneySchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = LearningJourney
+        include_fk =True
 
 #Role Schema
-class RoleSchema(ma.Schema):
+class RoleSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Role
+        include_fk =True
 
 #Skill Schema
-class SkillSchema(ma.Schema):
+class SkillSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Skill
+        include_fk =True
 
 #Course Schema
-class CourseSchema(ma.Schema):
+class CourseSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Course
+        include_fk =True
 
 #Registration Schema
-class RegistrationSchema(ma.Schema):
+class RegistrationSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Registration
+        include_fk =True
 
 #Init Schema
 user_type_schema = UserTypeSchema()
@@ -222,6 +229,56 @@ registrations_schema = RegistrationSchema(many=True)
 
 #Create Tables
 db.create_all()
+
+#Create a Role
+@app.route('/role', methods=['POST'])
+def add_role():
+    name = request.json['name']
+    active = request.json['active']
+
+    new_role = Role(name, active)
+
+    db.session.add(new_role)
+    db.session.commit()
+
+    return role_schema.jsonify(new_role)
+
+#Get All Roles
+@app.route('/role', methods=['GET'])
+def get_roles():
+    all_roles = Role.query.all()
+    result = roles_schema.dump(all_roles)
+    return jsonify(result)
+
+#Get Single Role
+@app.route('/role/<id>', methods=['GET'])
+def get_role(id):
+    role = Role.query.get(id)
+    return role_schema.jsonify(role)
+
+#Update a Role
+@app.route('/role/<id>', methods=['PUT'])
+def update_role(id):
+    role = Role.query.get(id)
+
+    name = request.json['name']
+    active = request.json['active']
+
+    role.name = name
+    role.active = active
+
+    db.session.commit()
+
+    return role_schema.jsonify(role)
+
+#Soft Delete Role
+@app.route('/role/<id>', methods=['DELETE'])
+def delete_role(id):
+    role = Role.query.get(id)
+    role.active = False
+    db.session.commit()
+
+    return role_schema.jsonify(role)
 
 
 
