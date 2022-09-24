@@ -280,6 +280,15 @@ def delete_role(id):
 
     return role_schema.jsonify(role)
 
+#Get skills by role
+@app.route('/role/<id>/skills', methods=['GET'])
+def get_skills_by_role(id):
+    role = Role.query.get(id)
+    skills = role.skills
+    result = skills_schema.dump(skills)
+    return jsonify(result)
+    
+
 
 
 #Run Server
