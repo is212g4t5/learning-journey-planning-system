@@ -318,7 +318,7 @@ def delete_role(id):
 
     return role_schema.jsonify(role)
 
-#Add multiple skills to a role
+#Add skills to a role
 @app.route('/role/<id>/skill', methods=['POST'])
 def add_skills_to_role(id):
     role = Role.query.get(id)
@@ -329,11 +329,13 @@ def add_skills_to_role(id):
     db.session.commit()
     return role_schema.jsonify(role)
 
-#Get all skills of a role
-@app.route('/role/<id>/skill', methods=['GET'])
-def get_skills_of_role(id):
+#Get skills by role
+@app.route('/role/<id>/skills', methods=['GET'])
+def get_skills_by_role(id):
     role = Role.query.get(id)
-    return skills_schema.jsonify(role.skills)
+    skills = role.skills
+    result = skills_schema.dump(skills)
+    return jsonify(result)
 
 
 #Run Server
