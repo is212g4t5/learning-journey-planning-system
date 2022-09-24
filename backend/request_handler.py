@@ -62,10 +62,10 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 #association table between Staff and Skill
-staff_skill = db.Table('staff_skill',db.Model.metadata,
-    db.Column('staff_id', db.Integer, db.ForeignKey('staff.id'), primary_key=True),
-    db.Column('skill_id', db.Integer, db.ForeignKey('skill.id'), primary_key=True)
-)
+# staff_skill = db.Table('staff_skill',db.Model.metadata,
+#     db.Column('staff_id', db.Integer, db.ForeignKey('staff.id'), primary_key=True),
+#     db.Column('skill_id', db.Integer, db.ForeignKey('skill.id'), primary_key=True)
+# )
 
 #association table between Role and Skill
 role_skill = db.Table('role_skill',db.Model.metadata,
@@ -106,7 +106,7 @@ class Staff(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     user_type_id = db.Column(db.Integer, db.ForeignKey('user_type.id'), nullable=False)
     learning_journeys = db.relationship('LearningJourney', backref='staff', lazy=True)
-    skills = db.relationship('Skill', secondary=staff_skill, backref='staffs', lazy=True)
+    # skills = db.relationship('Skill', secondary=staff_skill, backref='staffs', lazy=True)
 
     def __init__(self, first_name, last_name, department, email, user_type_id):
         self.first_name = first_name
