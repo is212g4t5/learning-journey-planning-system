@@ -329,6 +329,12 @@ def add_skills_to_role(id):
     db.session.commit()
     return role_schema.jsonify(role)
 
+#Get all skills of a role
+@app.route('/role/<id>/skill', methods=['GET'])
+def get_skills_of_role(id):
+    role = Role.query.get(id)
+    return skills_schema.jsonify(role.skills)
+
 
 #Run Server
 if __name__ == '__main__':
