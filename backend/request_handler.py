@@ -7,11 +7,49 @@ from flask_marshmallow import Marshmallow
 from sqlalchemy.orm import Session, relationship, sessionmaker
 import os
 
+
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+from getpass import getpass
+
+
+# # Get database address.
+# db_addr = input("DB ip address: ")
+# # Get username of the database.
+# db_user = input(f"Username of {db_addr}: ")
+# # Get password.
+# db_pass = getpass(f"Password of {db_user}@{db_addr}: ")
+# # Get the database name.
+# db_name = input("Database name to connect: ")
+
+# # join the inputs into a complete database url.
+# url = f"mysql+pymysql://{db_user}:{db_pass}@{db_addr}/{db_name}"
+
+
+# Get database address.
+db_addr = "localhost"
+# Get username of the database.
+db_user = "root"
+# Get password.
+db_pass = ""
+# Get the database name.
+db_name = "ljps"
+# join the inputs into a complete database url.
+db_url = f"mysql+mysqlconnector://{db_user}:{db_pass}@{db_addr}/{db_name}"
+
+# Create an engine object.
+engine = create_engine(db_url, echo=True)
+
+# Create database if it does not exist.
+if not database_exists(engine.url):
+    create_database(engine.url)
+    print("Database created.")
+
+
 #init app
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root' + \
-                                        '@localhost:3306/ljps'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #handle CORS
