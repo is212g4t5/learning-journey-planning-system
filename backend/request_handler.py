@@ -318,6 +318,16 @@ def delete_role(id):
 
     return role_schema.jsonify(role)
 
+#Add multiple skills to a role
+@app.route('/role/<id>/skill', methods=['POST'])
+def add_skills_to_role(id):
+    role = Role.query.get(id)
+    skill_ids = request.json['skill_ids']
+    for skill_id in skill_ids:
+        skill = Skill.query.get(skill_id)
+        role.skills.append(skill)
+    db.session.commit()
+    return role_schema.jsonify(role)
 
 
 #Run Server
