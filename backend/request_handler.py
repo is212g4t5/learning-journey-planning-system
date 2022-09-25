@@ -31,7 +31,7 @@ db_addr = "localhost"
 # Get username of the database.
 db_user = "root"
 # Get password.
-db_pass = ""
+db_pass = "root"
 # Get the database name.
 db_name = "ljps"
 # join the inputs into a complete database url.
@@ -267,6 +267,31 @@ registrations_schema = RegistrationSchema(many=True)
 
 #Create Tables
 db.create_all()
+
+#Create a skill
+@app.route('/skill', methods=['POST'])
+def add_skill():
+    name = request.json['name']
+    desc = request.json['description']
+    active = request.json['active']
+
+    new_skill = Skill(name, desc,active)
+
+    try:
+        db.session.add(new_skill)
+        db.session.commit()
+        return skill_schema.jsonify(new_skill),201
+    except Exception:
+        return jsonify({
+            "message": "Unable to commit to database."
+        }), 500
+
+#Get All Skills
+@app.route('/skill', methods=['GET'])
+def get_skills():
+    all_skills = Skill.query.all()
+    result = skills_schema.dump(all_skills)
+    return jsonify(result),200
 
 #Create a Role
 @app.route('/role', methods=['POST'])
