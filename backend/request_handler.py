@@ -137,12 +137,14 @@ class Role(db.Model):
     __tablename__ = 'role'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20),unique=True, nullable=False)
+    description = db.Column(db.String(255))
     active = db.Column(db.Boolean, default=True)
     learning_journeys = db.relationship('LearningJourney', backref='role', lazy=True)
     skills = db.relationship('Skill', secondary=role_skill, backref='roles', lazy=True)
 
-    def __init__(self, name, active):
+    def __init__(self, name, description, active):
         self.name = name
+        self.description = description
         self.active = active
 
 
@@ -272,9 +274,10 @@ db.create_all()
 @app.route('/role', methods=['POST'])
 def add_role():
     name = request.json['name']
+    description = request.json['description']
     active = request.json['active']
 
-    new_role = Role(name, active)
+    new_role = Role(name, description, active)
 
     db.session.add(new_role)
     db.session.commit()
@@ -329,8 +332,8 @@ def add_skills_to_role(id):
     db.session.commit()
     return role_schema.jsonify(role)
 
-#Get skills by role
-@app.route('/role/<id>/skills', methods=['GET'])
+# #Get skills by role
+@app.route('/role/<id>/skill', methods=['GET'])
 def get_skills_by_role(id):
     role = Role.query.get(id)
     skills = role.skills
