@@ -280,7 +280,7 @@ def add_skill():
     try:
         db.session.add(new_skill)
         db.session.commit()
-        return role_schema.jsonify(new_skill),201
+        return skill_schema.jsonify(new_skill),201
     except Exception:
         return jsonify({
             "message": "Unable to commit to database."
@@ -290,7 +290,7 @@ def add_skill():
 @app.route('/skill', methods=['GET'])
 def get_skills():
     all_skills = Skill.query.all()
-    result = roles_schema.dump(all_skills)
+    result = skills_schema.dump(all_skills)
     return jsonify(result),200
 
 #Create a Role
