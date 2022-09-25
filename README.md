@@ -11,4 +11,4 @@ IS212 SPM G4T5 Learning Journey Planning System (2022 Semester 1)
 ##to test API
 5. make sure request handler is up and running
 6. open Postman
-7. set the method(POST/GET/UPDATE/DELETE etc.) and use the host address, e.g. 127.0.1/<api endpoint> from running local server to make a request. make sure any neccessary body is added
+7. set the method(POST/GET/UPDATE/DELETE etc.) and use the host address, e.g. 127.0.0.1:5000/<api endpoint> from running local server to make a request. make sure any neccessary body is added
