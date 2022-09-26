@@ -4,26 +4,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from sqlalchemy.orm import Session, relationship, sessionmaker
 import os
-
-
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
-from getpass import getpass
-
-
-# # Get database address.
-# db_addr = input("DB ip address: ")
-# # Get username of the database.
-# db_user = input(f"Username of {db_addr}: ")
-# # Get password.
-# db_pass = getpass(f"Password of {db_user}@{db_addr}: ")
-# # Get the database name.
-# db_name = input("Database name to connect: ")
-
-# # join the inputs into a complete database url.
-# url = f"mysql+pymysql://{db_user}:{db_pass}@{db_addr}/{db_name}"
 
 
 # Get database address.
@@ -31,7 +14,7 @@ db_addr = "localhost"
 # Get username of the database.
 db_user = "root"
 # Get password.
-db_pass = "root"
+db_pass = ""
 # Get the database name.
 db_name = "ljps"
 # join the inputs into a complete database url.
@@ -61,11 +44,6 @@ db = SQLAlchemy(app)
 #init ma
 ma = Marshmallow(app)
 
-#association table between Staff and Skill
-# staff_skill = db.Table('staff_skill',db.Model.metadata,
-#     db.Column('staff_id', db.Integer, db.ForeignKey('staff.id'), primary_key=True),
-#     db.Column('skill_id', db.Integer, db.ForeignKey('skill.id'), primary_key=True)
-# )
 
 #association table between Role and Skill
 role_skill = db.Table('role_skill',db.Model.metadata,
@@ -106,8 +84,7 @@ class Staff(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     user_type_id = db.Column(db.Integer, db.ForeignKey('user_type.id'), nullable=False)
     learning_journeys = db.relationship('LearningJourney', backref='staff', lazy=True)
-    # skills = db.relationship('Skill', secondary=staff_skill, backref='staffs', lazy=True)
-
+ 
     def __init__(self, first_name, last_name, department, email, user_type_id):
         self.first_name = first_name
         self.last_name = last_name
@@ -292,8 +269,7 @@ def add_skill():
 @app.route('/skill', methods=['GET'])
 def get_skills():
     all_skills = Skill.query.all()
-    result = skills_schema.dump(all_skills)
-    return jsonify(result),200
+    return skills_schema.dump(all_skills),200
 
 #Create a Role
 @app.route('/role', methods=['POST'])
@@ -313,8 +289,7 @@ def add_role():
 @app.route('/role', methods=['GET'])
 def get_roles():
     all_roles = Role.query.all()
-    result = roles_schema.dump(all_roles)
-    return jsonify(result)
+    return roles_schema.jsonify(all_roles)
 
 #Get Single Role
 @app.route('/role/<id>', methods=['GET'])
@@ -328,9 +303,11 @@ def update_role(id):
     role = Role.query.get(id)
 
     name = request.json['name']
+    description = request.json['description']
     active = request.json['active']
 
     role.name = name
+    role.description = description
     role.active = active
 
     db.session.commit()
@@ -362,8 +339,7 @@ def add_skills_to_role(id):
 def get_skills_by_role(id):
     role = Role.query.get(id)
     skills = role.skills
-    result = skills_schema.dump(skills)
-    return jsonify(result)
+    return skills_schema.jsonify(skills)
 
 
 #Run Server
