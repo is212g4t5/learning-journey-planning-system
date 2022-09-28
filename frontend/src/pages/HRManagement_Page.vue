@@ -24,9 +24,9 @@
         active-class="text-primary"
         style="border-bottom:1px solid grey"
       >
-        <q-tab class="" name="View Job Roles" label="View Job Roles" />
-        <q-tab class="" name="View Skills" label="View Skills" />
-        <q-tab class="" name="View Courses" label="View Courses" />
+        <q-tab class="" name="View Job Roles" label="View Job Roles" no-caps />
+        <q-tab class="" name="View Skills" label="View Skills" no-caps />
+        <q-tab class="" name="View Courses" label="View Courses" no-caps/>
       </q-tabs>
 
       <q-tab-panels
@@ -55,11 +55,11 @@
               <div class="font-500 font-size-14 myTextGrey">There are no roles in the system. Start adding <br> new roles to view them.</div>
             </div>
           </q-tab-panel>
-          
+
 
           <!-- courses panel -->
           <q-tab-panel name="View Courses" v-show="coursesEmpty">
-            <q-btn label="Add New Course" color="primary" no-caps class="addButton absolute" style="right:20px"></q-btn>
+            
             <div class="text-center">
               <Lottie :options="defaultOptions"  v-on:animCreated="handleAnimation" style="width:20vw" />
               <div class="font-700 font-size-28">No Courses Found!</div>
