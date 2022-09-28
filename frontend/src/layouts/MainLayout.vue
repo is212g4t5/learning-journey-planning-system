@@ -101,20 +101,20 @@ const linksData = [
   {
     title: 'Courses',
     caption: 'github.com/quasarframework',
-    icon: 'credit_card',
-    link: '/page1'
+    icon: 'auto_stories',
+    link: '/Courses'
   },
   {
     title: 'Job Roles',
     caption: 'github.com/quasarframework',
-    icon: 'person',
-    link: '/page2'
+    icon: 'work',
+    link: '/Jobs'
   },
   {
     title: 'HR Management',
     caption: 'github.com/quasarframework',
     icon: 'person',
-    link: '/page2'
+    link: '/HR'
   },
   {
     title: 'Logout',
