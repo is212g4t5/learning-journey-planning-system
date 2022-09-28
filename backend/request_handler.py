@@ -75,13 +75,13 @@ def create_app():
         ma.init_app(app)
 
     #Register API route/blueprint
-    app.register_blueprint(role_api, url_prefix='/api/role')
-    app.register_blueprint(skill_api, url_prefix='/api/skill')
-    app.register_blueprint(learning_journey_api, url_prefix='/api/learning_journey')
-    app.register_blueprint(user_type_api, url_prefix='/api/user_type')
-    app.register_blueprint(staff_api, url_prefix='/api/staff')
-    app.register_blueprint(course_api, url_prefix='/api/course')
-    app.register_blueprint(registration_api, url_prefix='/api/registration')
+    app.register_blueprint(role_api, url_prefix='/api/roles')
+    app.register_blueprint(skill_api, url_prefix='/api/skills')
+    app.register_blueprint(learning_journey_api, url_prefix='/api/learning_journeys')
+    app.register_blueprint(user_type_api, url_prefix='/api/user_types')
+    app.register_blueprint(staff_api, url_prefix='/api/staffs')
+    app.register_blueprint(course_api, url_prefix='/api/courses')
+    app.register_blueprint(registration_api, url_prefix='/api/registrations')
 
     return app
 
