@@ -1,5 +1,7 @@
 import unittest
 
+
+
 class TestStringMethods(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -8,6 +10,14 @@ class TestStringMethods(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         print('Teardown after test suite of TestStringMethods')
+
+    # def setUp(self):
+    #     self.ctx = app.app_context()
+    #     self.ctx.push()
+    #     self.client = app.test_client()
+
+    # def tearDown(self):
+    #     self.ctx.pop()
 
     #run for each test case
     def setUp(self):
