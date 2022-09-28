@@ -35,7 +35,10 @@ db_addr = "localhost"
 # Get username of the database.
 db_user = "root"
 # Get password.
-db_pass = ""
+PASS = os.getenv("DB_PASSWORD") 
+if not PASS:
+    PASS = ""
+db_pass = PASS
 # Get the database name.
 db_name = "ljps"
 # join the inputs into a complete database url.
