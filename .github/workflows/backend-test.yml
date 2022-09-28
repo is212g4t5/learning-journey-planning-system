@@ -35,7 +35,6 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       
-
     - name: Set up MySQL
       run: |
         sudo /etc/init.d/mysql start
@@ -44,5 +43,4 @@ jobs:
     - name: run test
       working-directory: ./backend
       run: |
-        python request_handler.py
-        python ./tests/test_main.py
+       python request_handler.py & sleep 5 && pytest
