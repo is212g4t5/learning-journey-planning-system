@@ -19,5 +19,5 @@ def test_get_all_roles():
     response = requests.get("http://localhost:5000/api/role")
     assert response.status_code == 200
     response_json = response.json()
-    assert len(response_json) == 2
+    assert len(response_json) == 1
 
