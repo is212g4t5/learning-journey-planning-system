@@ -32,57 +32,62 @@ from apis.staff import staff_api
 from apis.course import course_api
 from apis.registration import registration_api
 
-# Get database address.
-db_addr = "localhost"
-# Get username of the database.
-db_user = "root"
-# Get password.
-PASS = os.getenv("DB_PASSWORD") 
-if not PASS:
-    PASS = ""
-db_pass = PASS
-# Get the database name.
-db_name = "ljps"
-# join the inputs into a complete database url.
-db_url = f"mysql+mysqlconnector://{db_user}:{db_pass}@{db_addr}/{db_name}"
-
-# Create an engine object.
-engine = create_engine(db_url, echo=True)
-
-# Create database if it does not exist.
-if not database_exists(engine.url):
-    create_database(engine.url)
-    print("Database created.")
+#Create app function
+def create_app():
 
 
-#init app
-app = Flask(__name__)
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # Get database address.
+    db_addr = "localhost"
+    # Get username of the database.
+    db_user = "root"
+    # Get password.
+    PASS = os.getenv("DB_PASSWORD") 
+    if not PASS:
+        PASS = ""
+    db_pass = PASS
+    # Get the database name.
+    db_name = "ljps"
+    # join the inputs into a complete database url.
+    db_url = f"mysql+mysqlconnector://{db_user}:{db_pass}@{db_addr}/{db_name}"
 
-#handle CORS
-CORS(app)
+    # Create an engine object.
+    engine = create_engine(db_url, echo=True)
 
-#Create Tables
-with app.app_context():
-    db.init_app(app)
-    db.create_all()
+    # Create database if it does not exist.
+    if not database_exists(engine.url):
+        create_database(engine.url)
+        print("Database created.")
 
-    ma.init_app(app)
 
-#Register API route/blueprint
-app.register_blueprint(role_api, url_prefix='/api/role')
-app.register_blueprint(skill_api, url_prefix='/api/skill')
-app.register_blueprint(learning_journey_api, url_prefix='/api/learning_journey')
-app.register_blueprint(user_type_api, url_prefix='/api/user_type')
-app.register_blueprint(staff_api, url_prefix='/api/staff')
-app.register_blueprint(course_api, url_prefix='/api/course')
-app.register_blueprint(registration_api, url_prefix='/api/registration')
+    #init app
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    #handle CORS
+    CORS(app)
+
+    #Create Tables
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
+
+        ma.init_app(app)
+
+    #Register API route/blueprint
+    app.register_blueprint(role_api, url_prefix='/api/role')
+    app.register_blueprint(skill_api, url_prefix='/api/skill')
+    app.register_blueprint(learning_journey_api, url_prefix='/api/learning_journey')
+    app.register_blueprint(user_type_api, url_prefix='/api/user_type')
+    app.register_blueprint(staff_api, url_prefix='/api/staff')
+    app.register_blueprint(course_api, url_prefix='/api/course')
+    app.register_blueprint(registration_api, url_prefix='/api/registration')
+
+    return app
 
 #Run Server
 if __name__ == '__main__':
-    app.run(debug=True)
+    create_app().run(debug=True)
 
 # Run the server
 # python main.py

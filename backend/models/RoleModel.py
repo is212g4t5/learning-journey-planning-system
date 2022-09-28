@@ -10,7 +10,7 @@ class Role(db.Model):
     learning_journeys = db.relationship('LearningJourney', backref='role', lazy=True)
     skills = db.relationship('Skill', secondary=role_skill, backref='roles', lazy=True)
 
-    def __init__(self, name, description, active):
+    def __init__(self, name, description, active = True):
         self.name = name
         self.description = description
         self.active = active

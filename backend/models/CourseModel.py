@@ -10,15 +10,15 @@ class Course(db.Model):
     type = db.Column(db.String(10))
     category = db.Column(db.String(50))
 
-    active = db.Column(db.Boolean, default=True)
+    # active = db.Column(db.Boolean, default=True)
     skills = db.relationship('Skill', secondary=course_skill, backref='courses', lazy=True)
 
-    def __init__(self, id, name, description, status, type, category, active):
+    def __init__(self, id, name, description, status, type, category, active = True):
         self.id = id
         self.name = name
         self.description = description
         self.status = status
         self.type = type
         self.category = category
-        self.active = active
+        # self.active = active
 
