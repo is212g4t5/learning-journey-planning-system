@@ -3,6 +3,8 @@ from pprint import pprint
 from flask import Flask
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
+load_dotenv(".env")
 
 #create database
 from sqlalchemy import create_engine
