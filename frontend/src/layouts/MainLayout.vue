@@ -19,7 +19,7 @@
       </q-toolbar>
     </q-header> -->
 
-    <q-header class="q-px-sm q-pt-sm" style="background-color:#f2f2f2;color:black" >
+    <q-header class="q-px-sm " style="background-color:white;;color:black" >
       <q-toolbar>
         <!-- <q-btn
           flat
@@ -31,9 +31,8 @@
           @click="leftDrawerOpen = !leftDrawerOpen"
         /> -->
 
-        <q-toolbar-title class="font-600 font-size-24">
-         SPM Project
-        </q-toolbar-title>
+        <img src="~assets/LJPS_logo.svg" alt="">
+
         
         
       </q-toolbar>
@@ -42,7 +41,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      style="background-color:#f2f2f2"
+      
       :width="250"
       
       :mini="miniState"
@@ -50,7 +49,7 @@
         @mouseout="miniState = true"
       
     >
-      <q-list class="">
+      <q-list class="" style="background-color:#f2f2f2;height:100%">
 
         <q-item
         v-for="link in essentialLinks"
@@ -100,19 +99,25 @@ const linksData = [
     link: '/home'
   },
   {
-    title: 'Page 1',
+    title: 'Courses',
     caption: 'github.com/quasarframework',
     icon: 'credit_card',
     link: '/page1'
   },
   {
-    title: 'Page 2',
+    title: 'Job Roles',
     caption: 'github.com/quasarframework',
     icon: 'person',
     link: '/page2'
   },
   {
-    title: 'Log Out',
+    title: 'HR Management',
+    caption: 'github.com/quasarframework',
+    icon: 'person',
+    link: '/page2'
+  },
+  {
+    title: 'Logout',
     caption: 'forum.quasar.dev',
     icon: 'logout',
     link: ''
