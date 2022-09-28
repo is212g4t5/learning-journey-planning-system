@@ -9,14 +9,13 @@ from models.UserTypeModel import UserType
 
 #unit test for CourseModel
 def test_course_model():
-    course = Course('test_id', 'test_name', 'test_description', 'test_status', 'test_type', 'test_category', True)
+    course = Course('test_id', 'test_name', 'test_description', 'test_status', 'test_type', 'test_category')
     assert course.id == 'test_id'
     assert course.name == 'test_name'
     assert course.description == 'test_description'
     assert course.status == 'test_status'
     assert course.type == 'test_type'
     assert course.category == 'test_category'
-    assert course.active == True
 
 #unit test for LearningJourneyModel
 def test_learning_journey_model():

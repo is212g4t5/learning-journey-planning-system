@@ -61,7 +61,6 @@ def create_app():
 
     #init app
     app = Flask(__name__)
-    basedir = os.path.abspath(os.path.dirname(__file__))
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
