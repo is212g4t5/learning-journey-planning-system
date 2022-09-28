@@ -223,6 +223,23 @@ export default {
           buttons:''
           
         },
+        {
+          id: 'JR002',
+          name: 'Junior Engineer',
+          description: 'A noob developer',
+          skills: ['HTML'],
+          buttons:''
+          
+        },
+        {
+          id: 'JR003',
+          name: 'Marketing Director',
+          description: 'A marketing person',
+          skills: ['Excel', ' Powerpoint'],
+          buttons:''
+          
+        },
+        
         
       ],
 
