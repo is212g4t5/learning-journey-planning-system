@@ -1,20 +1,30 @@
-import requests
+import json
+from request_handler import create_app
 
-test_data={
-        "name": "TestSkill1",
-        "description": "TestSkill1",
-        "active": true
-        } 
-url = domain+"/api/skills"
+#umbrella function for post testing
+def post_testing(test_client,url,test_data,key,value):
+    #test sucessful posting 
+    response = test_client.post(url,json=test_data) 
+    assert response.status_code==201,"response is "+str(response.status_code)
+    res = json.loads(response.data.decode('utf-8'))
+    assert res[key] == value,"returned value is incorrect"
+    #test bad request 400 for missing body
+    response = test_client.post(url,json={})
+    assert response.status_code==400, "response is "+ str(response.status_code)
+    #test bad request 400 for missing body
+    response = test_client.post(url)
+    assert response.status_code==400, "response is "+ str(response.status_code)
 
-def test_post_api(url,test_data):
-    response = requests.post(url,json=test_data)
-    assert response.get("Code")==201
+#function for testing get ALL
+def get_all_testing(test_client,url,length):
+    response = test_client.get(url)
+    assert response.status_code==200,"response is "+str(response.status_code)
+    res = json.loads(response.data.decode('utf-8'))
+    assert len(res)==length, "res is "+str(res)
 
-def test_get_all_api(url):
-    response = requests.post(url,json=test_data)
-    assert response.get("Code")==200
-
-def test_get_id_api(url):
-    response = requests.post(url,json=test_data)
-    assert response.get("Code")==200
+#function for testing get by ID
+def get_id_testing(test_client,url,key,value):
+    response = test_client.get(url)
+    assert response.status_code==200,"response is "+str(response.status_code)
+    res = json.loads(response.data.decode('utf-8'))
+    assert res[key] == value,"returned value is incorrect"

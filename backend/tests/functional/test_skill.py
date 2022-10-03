@@ -1,23 +1,19 @@
-import requests
+from util import post_testing, get_all_testing
 
 
-domain = "http://localhost:5000"
 
-def test_create_skill():
-    test_data={
-        "name": "TestSkill2",
-        "description": "TestSkill2",
+test_data={
+        "name": "TestSkill1",
+        "description": "TestSkill1",
         "active": True
         } 
-    url = domain+"/api/skills"
-    response = requests.post(url,json=test_data)
-    assert response.status_code==201
+url="/api/skills/"
 
-def test_get_skills():
-    url = domain+"/api/skills"
-    response = requests.get(url)
-    assert response.status_code==200
-
+def test_post_skills(test_post_client):
+    post_testing(test_post_client,url,test_data,"name","TestSkill1")
 
     
+def test_get_skills(test_get_client):
+    get_all_testing(test_get_client,url,3)
+
 
