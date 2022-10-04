@@ -12,7 +12,9 @@ roles_schema = RoleSchema(many=True)
 skill_schema = SkillSchema()
 skills_schema = SkillSchema(many=True)
 
-role_with_skills_schema = RoleWithSkillsSchema(many= True)
+role_with_skills_schema = RoleWithSkillsSchema()
+roles_with_skills_schema = RoleWithSkillsSchema(many= True)
+
 
 role_api = Blueprint('role_api', __name__)
 #Create a Role
@@ -71,7 +73,7 @@ def delete_role(id):
 @role_api.route('/skills', methods=['GET'])
 def get_roles_with_skills():
     all_roles = Role.query.all()
-    return role_with_skills_schema.jsonify(all_roles)
+    return roles_with_skills_schema.jsonify(all_roles)
 
 
 #Add skills to a role
@@ -108,9 +110,8 @@ def update_skills_for_role(id):
         }), 500
 
 
-
-#Get skills for a role
+#Get a role with skills
 @role_api.route('/<id>/skills', methods=['GET'])
-def get_skills_for_role(id):
+def get_role_with_skills(id):
     role = Role.query.get(id)
-    return skills_schema.jsonify(role.skills)
+    return role_with_skills_schema.jsonify(role)
