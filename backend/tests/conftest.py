@@ -53,6 +53,15 @@ def test_get_client():
             db.session.commit()
             yield testing_client  # this is where the testing happens!
 
+#sample data array:
+toAddData = []
+
+#try insert with tuple
+def add_to_db(data_array, some_class):
+    for each_dict in data_array:
+        to_insert = some_class(each_dict)
+        db.session.add(to_insert)
+    db.session.commit
 
 # @pytest.fixture(autouse=True, scope="session")
 # def start_server(app):

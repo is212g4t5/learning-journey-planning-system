@@ -8,7 +8,7 @@ def post_testing(test_client,url,test_data,key,value):
     assert response.status_code==201,"response is "+str(response.status_code)
     res = json.loads(response.data.decode('utf-8'))
     assert res[key] == value,"returned value is incorrect"
-    #test bad request 400 for missing body
+    #test bad request 400 for empty body
     response = test_client.post(url,json={})
     assert response.status_code==400, "response is "+ str(response.status_code)
     #test bad request 400 for missing body
