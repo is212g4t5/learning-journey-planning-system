@@ -66,9 +66,9 @@
                     {{ props.row.description }}
                 </q-td>
                 <q-td key="skills" :props="props">
-                  <q-badge v-for="(skill,index) in props.row.skills" :key="index" color="orange" class="q-mr-xs">
+                  <!-- <q-badge v-for="(skill,index) in props.row.skills" :key="index" color="orange" class="q-mr-xs">
                     {{skill}}
-                  </q-badge>
+                  </q-badge> -->
                 </q-td>
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
@@ -140,9 +140,10 @@
 <script>
 import Lottie from 'vue-lottie';
 import * as animationData from './empty.json';
+import axios from 'axios'
 export default {
   methods: {
-    onSubmit () {
+    async onSubmit () {
       this.$refs.jobRoleName.validate()
       this.$refs.jobRoleDescription.validate()
 
@@ -158,6 +159,14 @@ export default {
 
       // }
       else {
+
+
+       let postRes =  await axios.post('http://127.0.0.1:5000/api/roles',{
+          name:this.jobRoleName,
+          description:this.jobRoleDescription,
+          active:true 
+        })
+
         this.addJobDialog = false
         this.$q.notify({
           icon: 'done',
@@ -219,24 +228,24 @@ export default {
           id: 'JR001',
           name: 'Senior Engineer',
           description: 'A super pro developer',
-          skills: ['HTML','CSS','Javascript'],
-          buttons:''
+          // skills: ['HTML','CSS','Javascript'],
+          // buttons:''
           
         },
         {
           id: 'JR002',
           name: 'Junior Engineer',
           description: 'A noob developer',
-          skills: ['HTML'],
-          buttons:''
+          // skills: ['HTML'],
+          // buttons:''
           
         },
         {
           id: 'JR003',
           name: 'Marketing Director',
           description: 'A marketing person',
-          skills: ['Excel', ' Powerpoint'],
-          buttons:''
+          // skills: ['Excel', ' Powerpoint'],
+          // buttons:''
           
         },
         
@@ -255,6 +264,23 @@ export default {
   components: {
     Lottie
   },
+  async mounted(){
+    let roleData = await axios.get('http://127.0.0.1:5000/api/roles')
+    console.log(roleData.data)
+
+    this.jobsEmpty = true
+
+    roleData.data.forEach(element => {
+      if (element.active == true){
+        this.jobsEmpty = false
+        return
+      }
+    });
+
+    
+    this.jobData = roleData.data
+
+  }
   
 }
 </script>
