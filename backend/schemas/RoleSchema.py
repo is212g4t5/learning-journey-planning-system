@@ -7,3 +7,12 @@ class RoleSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Role
         include_fk =True
+
+
+
+#Role with Skills Schema
+class RoleWithSkillsSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Role
+        include_fk =True
+    skills = ma.Nested('SkillSchema', many=True)

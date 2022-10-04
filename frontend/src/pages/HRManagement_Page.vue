@@ -66,14 +66,14 @@
                     {{ props.row.description }}
                 </q-td>
                 <q-td key="skills" :props="props">
-                  <!-- <q-badge v-for="(skill,index) in props.row.skills" :key="index" color="orange" class="q-mr-xs">
-                    {{skill}}
-                  </q-badge> -->
+                  <q-badge v-for="(skill,index) in props.row.skills" :key="index" color="orange" class="q-mr-xs">
+                    {{skill.name}}
+                  </q-badge>
                 </q-td>
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditJobPopup(props.row)"></q-btn>
-                    <q-btn label="Assign" color="green" outline no-caps @click="assignJob(props.row)"></q-btn>
+                    <q-btn label="Assign" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
                     <q-btn label="Delete" color="red" outline no-caps @click="deleteJob(props.row)"></q-btn>
                 </q-td>
                 
@@ -197,6 +197,49 @@
           </q-card>
         </q-dialog>
 
+        <!-- assign skill to job dialog -->
+        <q-dialog v-model="assignDialog">
+          <q-card class="q-pa-md" style="width:50vw">
+            <div class="text-center font-700" style="color:#525252; font-size:28px">Assign Skill To Job Role</div>
+            <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+            <form @submit.prevent.stop="onAssignSkillToJobRole" >
+              <div class="q-mx-md">
+                <div class="font-size-16 q-mb-xs">Job Role Name</div>
+                <q-input ref="assignJobRoleName" outlined v-model="assignJobRoleName" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Job Role Name" style="font-size:16px" disable />
+              </div>
+
+              <div class="q-mx-md q-mt-md">
+                <div class="font-size-16 q-mb-xs">Job Role Description</div>
+                <q-input ref="assignJobRoleDescription" type="textarea" outlined v-model="assignJobRoleDescription" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Job Role Description" style="font-size:16px" disable />
+              </div>
+
+              <div class="q-mx-md ">
+                <div class="font-size-16 q-mb-xs">Select Skills</div>
+                <q-select
+                
+                autofocus
+                filled
+                v-model="skillOptions"
+                multiple
+                :options="skillOptionsArray"
+                :rules="[val => !!val || 'Field is required']"
+                style="font-size:16px"
+              />
+              </div>
+             
+           
+            
+
+            <q-card-actions align="right" class="q-mt-sm">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn  label="Assign" color="primary" type="submit" />
+            </q-card-actions>
+
+            </form>
+          </q-card>
+        </q-dialog>
+
 
         <!-- add skill dialog -->
         <q-dialog v-model="addSkillDialog">
@@ -303,7 +346,7 @@ export default {
    
     },
     async getJobTable(){
-      let roleData = await axios.get('http://127.0.0.1:5000/api/roles')
+      let roleData = await axios.get('http://127.0.0.1:5000/api/roles/skills')
       this.jobsEmpty = true
 
       let currJobData = []
@@ -318,6 +361,7 @@ export default {
 
       
       this.jobData = currJobData
+      console.log(this.jobData)
     },
 
     async openEditJobPopup(row){
@@ -376,8 +420,91 @@ export default {
     },
 
     
-    assignJob(row){
+    openAssignPopup(row){
       console.log(row)
+
+      //open dialog, store all the disabled fields
+      this.assignDialog = true
+      this.assignJobRoleName = row.name
+      this.assignJobRoleDescription = row.description
+      this.assignRowId = row.id
+
+      console.log('ASSIGN ROLE ID', this.assignRowId)
+
+      //store all skills as options 
+      let skillsArray = []
+      this.skillData.forEach(element => {
+        skillsArray.push(element.name)
+      });
+      this.skillOptionsArray = skillsArray
+
+
+
+      let skillsOptionsSelected = []
+      this.jobData.forEach(element => {
+        if (element.id == row.id){
+          skillsOptionsSelected = element.skills
+          return
+        }
+      });
+
+      console.log('skill options selected',skillsOptionsSelected)
+
+      let skillOptionsSelectedNames = []
+      skillsOptionsSelected.forEach(element => {
+        console.log(element)
+        skillOptionsSelectedNames.push(element.name)
+      }); 
+
+      console.log(skillOptionsSelectedNames)
+
+      this.skillOptions = skillOptionsSelectedNames
+
+
+    },
+    async onAssignSkillToJobRole(){
+      
+
+      if (this.skillOptions.length == 0){
+        this.$q.notify({
+          color: 'negative',
+          icon:'error',
+          message: 'Must select at least 1 skill!'
+        })
+      }else{
+        // have options, get the array of option IDs from skillOptions names
+        console.log(this.skillOptions)
+
+        let skillOptionIds = []
+        this.skillData.forEach(element => {
+          if (this.skillOptions.includes(element.name) ){
+            skillOptionIds.push(element.id)
+          }
+        });
+
+
+        console.log('job id',this.assignRowId,'skill option ids:',skillOptionIds)
+
+        let assignRes = await axios.put(`http://127.0.0.1:5000/api/roles/${this.assignRowId}/skills`,{
+          skill_ids:skillOptionIds
+        })
+        
+        // console.log(assignRes)
+
+        // this.skillOptions = []
+        this.assignDialog = false
+        this.getJobTable()
+          
+        this.$q.notify({
+          icon: 'done',
+          color: 'positive',
+          icon:'done',
+          message: 'Assigned skills to role'
+        })
+
+
+
+      }
     },
     async deleteJob(row){
       console.log(row)
@@ -505,6 +632,13 @@ export default {
       editJobRoleName:'',
       editJobRoleDescription:'',
       editRowId:0,
+
+      assignDialog:false,
+      assignJobRoleName:'',
+      assignJobRoleDescription:'',
+      assignRowId:0,
+      skillOptionsArray:[], //for the skill options
+      skillOptions:'skill1', //v-model
 
 
       addSkillDialog:false,
