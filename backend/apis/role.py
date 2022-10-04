@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from models.shared_model import db
 from models.RoleModel import Role
 from models.SkillModel import Skill
-from schemas.RoleSchema import RoleSchema
+from schemas.RoleSchema import RoleSchema, RoleWithSkillsSchema
 from schemas.SkillSchema import SkillSchema
 
 
@@ -11,6 +11,10 @@ roles_schema = RoleSchema(many=True)
 
 skill_schema = SkillSchema()
 skills_schema = SkillSchema(many=True)
+
+role_with_skills_schema = RoleWithSkillsSchema()
+roles_with_skills_schema = RoleWithSkillsSchema(many= True)
+
 
 role_api = Blueprint('role_api', __name__)
 #Create a Role
@@ -65,6 +69,13 @@ def delete_role(id):
 
     return role_schema.jsonify(role)
 
+#Get roles with skills
+@role_api.route('/skills', methods=['GET'])
+def get_roles_with_skills():
+    all_roles = Role.query.all()
+    return roles_with_skills_schema.jsonify(all_roles)
+
+
 #Add skills to a role
 @role_api.route('/<id>/skills', methods=['POST'])
 def add_skills_to_role(id):
@@ -81,9 +92,26 @@ def add_skills_to_role(id):
             "message": "Unable to commit to database."
         }), 500
 
-
-#Get skills for a role
-@role_api.route('/<id>/skills', methods=['GET'])
-def get_skills_for_role(id):
+#Update skills for a role
+@role_api.route('/<id>/skills', methods=['PUT'])
+def update_skills_for_role(id):
     role = Role.query.get(id)
-    return skills_schema.jsonify(role.skills)
+    skill_ids = request.json['skill_ids']
+    role.skills = []
+    for skill_id in skill_ids:
+        skill = Skill.query.get(skill_id)
+        role.skills.append(skill)
+    try:
+        db.session.commit()
+        return role_schema.jsonify(role), 201
+    except Exception:
+        return jsonify({
+            "message": "Unable to commit to database."
+        }), 500
+
+
+#Get a role with skills
+@role_api.route('/<id>/skills', methods=['GET'])
+def get_role_with_skills(id):
+    role = Role.query.get(id)
+    return role_with_skills_schema.jsonify(role)
