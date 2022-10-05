@@ -19,15 +19,17 @@ def add_skill():
         description = data['description']
         active = data['active']
     except Exception as json_error:
+        if '400' in str(json_error):
+            return jsonify({
+            "message": "Missing body"
+            }), 400
         return jsonify({
-            "message": +str(json_error)
-        }), 400
+            "message": "Missing input: "+str(json_error)
+            }), 400
 
     if (Skill.query.filter_by(name=name).first()):
         return jsonify(
-            {   
-                "message": "Skill already exists."
-            }
+            {"message": "Skill already exists."}
         ), 400
 
     new_skill = Skill(name, description, active)
