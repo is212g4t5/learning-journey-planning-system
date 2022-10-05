@@ -13,23 +13,34 @@ skill_api = Blueprint('skill_api', __name__)
 #Create a Skill
 @skill_api.route('/', methods=['POST'])
 def add_skill():
+    try:
+        data = request.json
+        name = data['name']
+        description = data['description']
+        active = data['active']
+    except Exception as json_error:
+        if '400' in str(json_error):
+            return jsonify({
+            "message": "Missing body"
+            }), 400
+        return jsonify({
+            "message": "Missing input: "+str(json_error)
+            }), 400
 
-    name = request.json['name']
-    description = request.json['description']
-    active = request.json['active']
+    if (Skill.query.filter_by(name=name).first()):
+        return jsonify(
+            {"message": "Skill already exists."}
+        ), 400
 
     new_skill = Skill(name, description, active)
-
-    db.session.add(new_skill)
-    db.session.commit()
 
     try:
         db.session.add(new_skill)
         db.session.commit()
         return skill_schema.jsonify(new_skill),201
-    except Exception:
+    except Exception as e:
         return jsonify({
-            "message": "Unable to commit to database."
+            "message": "Unable to add skill to database. "+str(e)
         }), 500
 
 #Get All Skills
@@ -38,7 +49,7 @@ def get_skills():
     all_skills = Skill.query.all()
     try:
         return skills_schema.dump(all_skills),200
-    except Exception:
+    except Exception as e:
         return jsonify({
-            "message": "Unable to commit to database."
+            "message": "Unable to retrieve data. "+str(e)
         }), 500
