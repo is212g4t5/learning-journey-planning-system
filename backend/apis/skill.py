@@ -20,16 +20,12 @@ def add_skill():
         active = data['active']
     except Exception as json_error:
         return jsonify({
-            "message": "Unable to commit to database. "+str(json_error)
+            "message": +str(json_error)
         }), 400
 
     if (Skill.query.filter_by(name=name).first()):
         return jsonify(
             {   
-                "code": 400,
-                "data": {
-                    "name": name
-                },
                 "message": "Skill already exists."
             }
         ), 400
@@ -42,7 +38,7 @@ def add_skill():
         return skill_schema.jsonify(new_skill),201
     except Exception as e:
         return jsonify({
-            "message": "Unable to commit to database. "+str(e)
+            "message": "Unable to add skill to database. "+str(e)
         }), 500
 
 #Get All Skills
