@@ -43,4 +43,4 @@ jobs:
     - name: run test
       working-directory: ./backend
       run: |
-       python request_handler.py & sleep 5 && pytest -v
+       pytest -v --disable-warnings
