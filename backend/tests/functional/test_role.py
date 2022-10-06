@@ -11,7 +11,7 @@ class TestRole:
     @pytest.fixture(autouse=True, scope="function")
     def add_roles(self,db_setup,app):
         self.url="/api/roles/"
-        db = db_setup
+        self.db = db_setup
         self.app = app
         
         self.role1 = Role(name="TestRole1",description="TestDesc",active=True)
@@ -19,10 +19,10 @@ class TestRole:
         self.role3 = Role(name="TestRole3",description="TestDesc",active=True)
 
         with app.app_context():
-            db.session.add(self.role1)
-            db.session.add(self.role2)
-            db.session.add(self.role3)
-            db.session.commit()
+            self.db.session.add(self.role1)
+            self.db.session.add(self.role2)
+            self.db.session.add(self.role3)
+            self.db.session.commit()
 
     #test get all roles
     def test_get_all_roles(self,client):
@@ -43,8 +43,27 @@ class TestRole:
         assert res["active"] == True
 
     
+    
+    #test update role by id
+    def test_update_role_by_id(self,client):
+        put_data={
+            "name": "TestUpdatedRole1",
+            "description": "TestUpdatedDesc",
+            "active": False
+            } 
+        response = client.put(self.url+"1",json=put_data)
+        assert response.status_code==200,"response is "+str(response.status_code)
+        
+        with self.app.app_context():
+            role = Role.query.get(1)
+            assert role.name == put_data["name"]
+            assert role.description == put_data["description"]
+            assert role.active == put_data["active"]
 
-    
-    
-
-    
+    #test delete role by id
+    def test_delete_role_by_id(self,client):
+        response = client.delete(self.url+"1")
+        assert response.status_code==200,"response is "+str(response.status_code)
+        with self.app.app_context():
+            role = Role.query.get(1)
+            assert role.active == False
