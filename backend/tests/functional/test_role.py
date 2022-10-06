@@ -60,4 +60,10 @@ class TestRole:
             assert role.description == put_data["description"]
             assert role.active == put_data["active"]
 
-            
+    #test delete role by id
+    def test_delete_role_by_id(self,client):
+        response = client.delete(self.url+"1")
+        assert response.status_code==200,"response is "+str(response.status_code)
+        with self.app.app_context():
+            role = Role.query.get(1)
+            assert role.active == False
