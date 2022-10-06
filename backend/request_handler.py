@@ -1,6 +1,10 @@
 #flask server
+# from http.client import HTTPException
+from email import message
+from werkzeug.exceptions import HTTPException, BadRequest
 from pprint import pprint
-from flask import Flask
+from sqlalchemy.exc import DatabaseError
+from flask import Flask, jsonify
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
@@ -74,6 +78,27 @@ def create_app():
 
         ma.init_app(app)
 
+   
+
+    def handle_error(error):
+        code = 500
+      
+        if isinstance(error, KeyError):
+            code = 400  
+            error =  "Missing input: "+str(error) 
+        elif isinstance(error, HTTPException):
+            code = error.code
+            if isinstance(error, BadRequest):
+                error =  "Missing Body or invalid JSON syntax"
+      
+        elif isinstance(error, DatabaseError):
+            error = error.__cause__
+    
+        return jsonify(message= str(error)), code
+
+    #register database error handler
+    app.register_error_handler(Exception, handle_error)
+    
     #Register API route/blueprint
     app.register_blueprint(role_api, url_prefix='/api/roles')
     app.register_blueprint(skill_api, url_prefix='/api/skills')
