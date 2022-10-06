@@ -48,5 +48,13 @@ class TestRole:
         # assert response.status_code==200,"response is "+str(response.status_code)
         # assert response["1"] == value
     
-
-    
+    #test update role by id
+    def test_update_role_by_id(self,client):
+        put_data={
+            "name": "TestUpdatedRole1",
+            "description": "TestUpdatedDesc",
+            "active": False
+            } 
+        response = client.put(self.url+"1",json=put_data)
+        assert response.status_code==200,"response is "+str(response.status_code)
+        assert response.json["active"] == False
