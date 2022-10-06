@@ -1,5 +1,5 @@
+from models.SkillModel import Skill
 from models.RoleModel import Role
-from schemas.RoleSchema import RoleSchema
 from util import post_testing, get_all_testing, get_id_testing
 import pytest
 
@@ -37,7 +37,9 @@ class TestRole:
         # get_id_testing(client,self.url+"1","name","TestRole1")
         response = client.get(self.url+"1")
         assert response.status_code==200,"response is "+str(response.status_code)
+        
         res = response.json
+        assert res['id'] == 1
         assert res["name"] == "TestRole1"
         assert res["description"] == "TestDesc"
         assert res["active"] == True
@@ -64,6 +66,47 @@ class TestRole:
     def test_delete_role_by_id(self,client):
         response = client.delete(self.url+"1")
         assert response.status_code==200,"response is "+str(response.status_code)
+        
         with self.app.app_context():
             role = Role.query.get(1)
             assert role.active == False
+
+    #test assign skills to role
+    def test_assign_skills_to_role(self,client, create_skills):
+
+        put_data={
+            "skill_ids": [1,2,3]
+            } 
+        response = client.put(self.url+"1/skills",json=put_data)
+        assert response.status_code==200,"response is "+str(response.status_code)
+        
+        with self.app.app_context():
+            role = Role.query.get(1)
+            assert len(role.skills) == 3
+            for skill in role.skills:
+                assert skill.id in [1,2,3]
+
+    #test get role with skills
+    def test_get_role_with_skills(self,client, create_skills):
+
+        skill1,skill2,skill3 = create_skills
+
+        #add skills to role
+        with self.app.app_context():
+            role1 = Role.query.get(1)
+            role1.skills.append(skill1)
+            role1.skills.append(skill2)
+            role1.skills.append(skill3)
+            self.db.session.commit()
+        
+        response = client.get(self.url+"1/skills")
+        assert response.status_code==200,"response is "+str(response.status_code)
+        
+        res = response.json
+        assert res["id"] == 1
+        assert res["name"] == "TestRole1"
+        assert res["description"] == "TestDesc"
+        assert res["active"] == True
+        assert len(res["skills"]) == 3
+        for skill in res["skills"]:
+            assert skill["id"] in [1,2,3]

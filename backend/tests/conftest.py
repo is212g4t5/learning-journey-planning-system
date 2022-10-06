@@ -33,7 +33,19 @@ def db_setup(app):
 
     yield db
 
-
+@pytest.fixture( scope="function")
+def create_skills(app):
+    skill1 = Skill(name="TestSkill1",description="TestDesc",active=True)
+    skill2 = Skill(name="TestSkill2",description="TestDesc",active=True)
+    skill3 = Skill(name="TestSkill3",description="TestDesc",active=True)
+    
+    with app.app_context():
+        db.session.add(skill1)
+        db.session.add(skill2)
+        db.session.add(skill3)
+        db.session.commit()
+    
+    return skill1,skill2,skill3
 
 @pytest.fixture(scope='function')
 def test_post_client():
