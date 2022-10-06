@@ -7,13 +7,33 @@ import subprocess
 from request_handler import create_app
 from models.shared_model import db
 from models.SkillModel import Skill
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture( scope="session")
 def app():
-    app=create_app()
-
-    
+    app=create_app()  
+    app.config.update({
+        "TESTING": True,
+    })
 
     yield app
+
+@pytest.fixture()
+def client(app):
+    return app.test_client()
+
+
+@pytest.fixture()
+def runner(app):
+    return app.test_cli_runner()
+
+@pytest.fixture( scope="function")
+def db_setup(app):
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+
+    yield db
+
+
 
 @pytest.fixture(scope='function')
 def test_post_client():
@@ -63,23 +83,5 @@ def add_to_db(data_array, some_class):
         db.session.add(to_insert)
     db.session.commit
 
-# @pytest.fixture(autouse=True, scope="session")
-# def start_server(app):
-    
-#     # app.run()
-#     # other setup can go here
-#     p = multiprocessing.Process(target=create_app().run)
-#     p.start()
-#     print("setup")
-#     yield app
-#     print("teardown")
-#     p.terminate()
-
-# @pytest.fixture()
-# def client(app):
-#     return app.test_client()
 
 
-# @pytest.fixture()
-# def runner(app):
-#     return app.test_cli_runner()
