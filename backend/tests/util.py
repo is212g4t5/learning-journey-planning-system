@@ -34,7 +34,7 @@ def get_id_testing(test_client,url,key,value):
     assert res[key] == value, str(res[key]) +" == " +str(value) + "\nres is "+str(res)
 
 #function for testing update(PUT) by ID
-def post_testing(test_client,url,test_data,key,value):
+def put_testing(test_client,url,test_data,key,value):
     #test sucessful posting 
     response = test_client.post(url,json=test_data) 
     assert response.status_code==200,str(response.status_code) +" == " +str(200) + "\nresponse is "+str(response.status_code)
