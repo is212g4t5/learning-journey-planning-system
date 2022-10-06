@@ -29,7 +29,7 @@ def add_role():
     db.session.add(new_role)
     db.session.commit()
 
-    return role_schema.jsonify(new_role)
+    return role_schema.jsonify(new_role),201
 
 #Get All Roles
 @role_api.route('/', methods=['GET'])
@@ -76,23 +76,7 @@ def get_roles_with_skills():
     return roles_with_skills_schema.jsonify(all_roles)
 
 
-#Add skills to a role
-@role_api.route('/<id>/skills', methods=['POST'])
-def add_skills_to_role(id):
-    role = Role.query.get(id)
-    skill_ids = request.json['skill_ids']
-    for skill_id in skill_ids:
-        skill = Skill.query.get(skill_id)
-        role.skills.append(skill)
-    try:
-        db.session.commit()
-        return role_schema.jsonify(role), 201
-    except Exception:
-        return jsonify({
-            "message": "Unable to commit to database."
-        }), 500
-
-#Update skills for a role
+#Update skills assigned for a role
 @role_api.route('/<id>/skills', methods=['PUT'])
 def update_skills_for_role(id):
     role = Role.query.get(id)
@@ -103,7 +87,7 @@ def update_skills_for_role(id):
         role.skills.append(skill)
     try:
         db.session.commit()
-        return role_schema.jsonify(role), 201
+        return role_with_skills_schema.jsonify(role), 201
     except Exception:
         return jsonify({
             "message": "Unable to commit to database."
