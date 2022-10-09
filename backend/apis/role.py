@@ -85,13 +85,10 @@ def update_skills_for_role(id):
     for skill_id in skill_ids:
         skill = Skill.query.get(skill_id)
         role.skills.append(skill)
-    try:
-        db.session.commit()
-        return role_with_skills_schema.jsonify(role)
-    except Exception:
-        return jsonify({
-            "message": "Unable to commit to database."
-        }), 500
+   
+    db.session.commit()
+    return role_with_skills_schema.jsonify(role)
+ 
 
 
 #Get a role with skills
