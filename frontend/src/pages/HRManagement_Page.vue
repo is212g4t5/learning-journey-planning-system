@@ -111,7 +111,7 @@
             <div class="text-center font-700" style="color:#525252; font-size:28px">Add Job Role</div>
             <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
 
-            <form @submit.prevent.stop="onSubmit" >
+            <form @submit.prevent.stop="addJob" >
               <div class="q-mx-md">
                 <div class="font-size-16 q-mb-xs">Job Role Name</div>
                 <q-input ref="jobRoleName" outlined v-model="jobRoleName" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Job Role Name" style="font-size:16px" />
@@ -142,7 +142,7 @@ import Lottie from 'vue-lottie';
 import * as animationData from './empty.json';
 export default {
   methods: {
-    onSubmit () {
+    async addJob() {
       this.$refs.jobRoleName.validate()
       this.$refs.jobRoleDescription.validate()
 
@@ -152,13 +152,19 @@ export default {
           icon:'error',
           message: 'Inputs cannot be empty'
         })
+
+        return
       }
       // // add else if the name already inside database, throw error
       // else if(){
 
+        // return
       // }
       else {
         this.addJobDialog = false
+
+        // await axios.post
+
         this.$q.notify({
           icon: 'done',
           color: 'positive',
