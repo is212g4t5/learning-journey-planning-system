@@ -13,19 +13,10 @@ skill_api = Blueprint('skill_api', __name__)
 #Create a Skill
 @skill_api.route('/', methods=['POST'])
 def add_skill():
-    try:
-        data = request.json
-        name = data['name']
-        description = data['description']
-        active = data['active']
-    except Exception as json_error:
-        if '400' in str(json_error):
-            return jsonify({
-            "message": "Missing body"
-            }), 400
-        return jsonify({
-            "message": "Missing input: "+str(json_error)
-            }), 400
+    data = request.json
+    name = data['name']
+    description = data['description']
+    active = data['active']
 
     if (Skill.query.filter_by(name=name).first()):
         return jsonify(
@@ -42,6 +33,33 @@ def add_skill():
         return jsonify({
             "message": "Unable to add skill to database. "+str(e)
         }), 500
+
+#Update Skill
+@skill_api.route('/<id>', methods=['PUT'])
+def update_skill(id):
+    skill = Skill.query.get(id)
+    
+    data = request.json
+    name = data['name']
+    description = data['description']
+    active = data['active']
+
+    skill.name = name
+    skill.description = description
+    skill.active = active
+    db.session.commit()
+    return skill_schema.jsonify(skill),200
+
+
+#Delete Skill
+@skill_api.route('/<id>', methods=['DELETE'])
+def remove_skill(id):
+    skill = Skill.query.get(id)
+    skill.active = False
+    db.session.commit()
+
+    return skill_schema.jsonify(skill),200
+    
 
 #Get All Skills
 @skill_api.route('/', methods=['GET'])
