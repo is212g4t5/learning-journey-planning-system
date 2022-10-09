@@ -7,6 +7,7 @@ import subprocess
 from request_handler import create_app
 from models.shared_model import db
 from models.SkillModel import Skill
+from models.RoleModel import Role
 @pytest.fixture( scope="session")
 def app():
     app=create_app()  
@@ -34,6 +35,37 @@ def db_setup(app):
     yield db
 
 
+#Creade data for testing
+
+#create a fixture for adding skills to db
+@pytest.fixture( scope="function")
+def create_skills(app):
+    skill1 = Skill(name="TestSkill1",description="TestDesc",active=True)
+    skill2 = Skill(name="TestSkill2",description="TestDesc",active=True)
+    skill3 = Skill(name="TestSkill3",description="TestDesc",active=True)
+    
+    with app.app_context():
+        db.session.add(skill1)
+        db.session.add(skill2)
+        db.session.add(skill3)
+        db.session.commit()
+    
+    return skill1,skill2,skill3
+
+#creaet a fixture for adding roles to db
+@pytest.fixture( scope="function")
+def create_roles(app):
+    role1 = Role(name="TestRole1",description="TestDesc",active=True)
+    role2 = Role(name="TestRole2",description="TestDesc",active=True)
+    role3 = Role(name="TestRole3",description="TestDesc",active=True)
+
+    with app.app_context():
+        db.session.add(role1)
+        db.session.add(role2)
+        db.session.add(role3)
+        db.session.commit()
+    
+    return role1,role2,role3
 
 @pytest.fixture(scope='function')
 def test_post_client():
