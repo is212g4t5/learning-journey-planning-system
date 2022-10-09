@@ -8,7 +8,11 @@ courses_schema = CourseSchema(many=True)
 
 course_api = Blueprint('course_api', __name__)
 
-
+#Get All Courses
+@course_api.route('/', methods=['GET'])
+def get_courses():
+    all_courses = Course.query.all()
+    return courses_schema.jsonify(all_courses)
 
 #Get All Active Courses
 @course_api.route('/active', methods=['GET'])
