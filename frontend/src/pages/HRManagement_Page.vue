@@ -70,6 +70,14 @@
                     {{skill.name}}
                   </q-badge>
                 </q-td>
+                <q-td key="status" :props="props">
+                  <q-badge v-if="props.row.active == true" color="green" class="q-mr-xs">
+                    Active
+                  </q-badge>
+                  <q-badge v-else color="red" class="q-mr-xs">
+                    Inactive
+                  </q-badge>
+                </q-td>
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditJobPopup(props.row)"></q-btn>
@@ -352,16 +360,18 @@ export default {
       let currJobData = []
 
       roleData.data.forEach(element => {
-        if (element.active == true){
-          this.jobsEmpty = false
-          currJobData.push(element)
+        // if (element.active == true){
+        //   this.jobsEmpty = false
+        //   currJobData.push(element)
           
-        }
+        // }
+        this.jobsEmpty = false
+        currJobData.push(element)
       });
 
       
       this.jobData = currJobData
-      console.log(this.jobData)
+      console.log('job data:',this.jobData)
     },
 
     async openEditJobPopup(row){
@@ -523,7 +533,7 @@ export default {
         icon: 'done',
         color: 'positive',
         icon:'done',
-        message: 'Deleted row'
+        message: 'Job Role Made Inactive'
       })
 
       // refresh table again
@@ -661,8 +671,9 @@ export default {
           sortable: true
         },
         { name: 'name', align: 'center', label: 'Job Role Name', field: 'name', sortable: true },
-        { name: 'description', align: 'center', label: 'Job Role Description', field: 'description', sortable: true },
+        { name: 'description', align: 'center', label: 'Job Role Description', field: 'description',style: "max-width:400px;white-space: normal;" },
         { name: 'skills', align: 'center', label: 'Job Role Skills', field: 'skills' },
+        { name: 'status', align: 'center', label: 'Job Role Status', field: 'status' },
         { name: 'buttons', align: 'center', field: 'buttons' },
         
       ],
