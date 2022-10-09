@@ -119,10 +119,13 @@
                 <q-td key="description" :props="props">
                     {{ props.row.description }}
                 </q-td>
-                <q-td key="skills" :props="props">
-                  <!-- <q-badge v-for="(skill,index) in props.row.skills" :key="index" color="orange" class="q-mr-xs">
-                    {{skill}}
-                  </q-badge> -->
+                <q-td key="status" :props="props">
+                  <q-badge v-if="props.row.active == true" color="green" class="q-mr-xs">
+                    Active
+                  </q-badge>
+                  <q-badge v-else color="red" class="q-mr-xs">
+                    Inactive
+                  </q-badge>
                 </q-td>
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
@@ -140,11 +143,18 @@
           <!-- courses panel -->
           <q-tab-panel name="View Courses" v-show="coursesEmpty">
             
-            <div class="text-center" v-if="skillsEmpty">
+            <div class="text-center" v-if="coursesEmpty">
               <Lottie :options="defaultOptions"  style="width:20vw" />
               <div class="font-700 font-size-28">No Courses Found!</div>
               <div class="font-500 font-size-14 myTextGrey">There are no roles in the system. Start adding <br> new roles to view them.</div>
             </div>
+
+
+            
+
+
+
+
           </q-tab-panel>
         </q-tab-panels>
     
@@ -189,9 +199,20 @@
                 <q-input ref="editJobRoleName" outlined v-model="editJobRoleName" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Job Role Name" style="font-size:16px" />
               </div>
 
-              <div class="q-mx-md q-mt-md">
+              <div class="q-mx-md">
                 <div class="font-size-16 q-mb-xs">Job Role Description</div>
                 <q-input ref="editJobRoleDescription" type="textarea" outlined v-model="editJobRoleDescription" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Job Role Description" style="font-size:16px" />
+
+
+                <div class="font-size-16 q-mb-xs ">Skill Status</div>
+                <q-select
+                class=""
+                outlined
+                v-model="editJobStatusOption"
+                :options="['Active','Inactive']"
+                :rules="[val => !!val || 'Field is required']"
+                style="font-size:16px"
+              />
               </div>
            
             
@@ -271,6 +292,45 @@
             <q-card-actions align="right" class="q-mt-sm">
               <q-btn flat label="Cancel" color="primary" v-close-popup />
               <q-btn  label="Add Skill" color="primary" type="submit" />
+            </q-card-actions>
+
+            </form>
+          </q-card>
+        </q-dialog>
+
+
+        <!-- edit skill dialog -->
+        <q-dialog v-model="editSkillDialog">
+          <q-card class="q-pa-md" style="width:50vw">
+            <div class="text-center font-700" style="color:#525252; font-size:26px">Edit Skill</div>
+            <div class="q-mx-auto " style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+            <form @submit.prevent.stop="onEditSkill" >
+              <div class="q-mx-md">
+                <div class="font-size-16 q-mb-xs">Skill Name</div>
+                <q-input ref="editSkillName" outlined v-model="editSkillName" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Name" style="font-size:16px" />
+              </div>
+
+              <div class="q-mx-md ">
+                <div class="font-size-16 q-mb-xs">Skill Description</div>
+                <q-input ref="editSkillDescription" type="textarea" outlined v-model="editSkillDescription" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Description" style="font-size:16px" />
+                
+                  <div class="font-size-16 q-mb-xs q-mt-md">Skill Status</div>
+                <q-select
+                class=""
+                outlined
+                v-model="editSkillStatusOption"
+                :options="['Active','Inactive']"
+                :rules="[val => !!val || 'Field is required']"
+                style="font-size:16px"
+              />
+              </div>
+           
+              
+
+            <q-card-actions align="right" class="q-mt-sm">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn  label="Edit" color="primary" type="submit" />
             </q-card-actions>
 
             </form>
@@ -376,11 +436,17 @@ export default {
 
     async openEditJobPopup(row){
       this.editJobDialog = true
-      console.log(row)
       this.editJobRoleName = row.name
       this.editJobRoleDescription = row.description
-
       this.editRowId = row.id
+
+      console.log(row)
+      this.editJobStatusOption = row.active
+      if (row.active == true){
+        this.editJobStatusOption = 'Active'
+      }else{
+        this.editJobStatusOption = 'Inactive'
+      }
     },
     async onEditJobRole(){
       //basically same as onSubmit but instead of POST is PUT
@@ -395,10 +461,18 @@ export default {
         })
       }
       else {
+
+        let jobStatus = ''
+        if (this.editJobStatusOption == 'Active'){
+          jobStatus = true
+        }else{
+          jobStatus = false
+        }
+
           let updateRes = await axios.put(`http://127.0.0.1:5000/api/roles/${this.editRowId}`,{
             name:this.editJobRoleName,
             description:this.editJobRoleDescription,
-            active:true 
+            active:jobStatus
           }).catch(err=>{
             console.log(err)
             this.$q.notify({
@@ -473,8 +547,6 @@ export default {
 
     },
     async onAssignSkillToJobRole(){
-      
-
       if (this.skillOptions.length == 0){
         this.$q.notify({
           color: 'negative',
@@ -628,6 +700,72 @@ export default {
    
     },
 
+    openEditSkillPopup(row){
+      this.editSkillDialog = true
+      this.editSkillName = row.name
+      this.editSkillDescription = row.description
+      this.editSkillId = row.id
+      if (row.active == true){
+        this.editSkillStatusOption = 'Active'
+      }else{
+        this.editSkillStatusOption = 'Inactive'
+      }
+      
+      console.log(row)
+    },
+    async onEditSkill(){
+      //basically same as onSubmit but instead of POST is PUT
+      this.$refs.editSkillName.validate()
+      this.$refs.editSkillDescription.validate()
+
+      if (this.$refs.editSkillName.hasError || this.$refs.editSkillDescription.hasError) {
+        this.$q.notify({
+          color: 'negative',
+          icon:'error',
+          message: 'Inputs cannot be empty'
+        })
+      }
+      else {
+        let jobStatus = ''
+        if (this.editSkillStatusOption == 'Active'){
+          jobStatus = true
+        }else{
+          jobStatus = false
+        }
+          let updateRes = await axios.put(`http://127.0.0.1:5000/api/skills/${this.editSkillId}/`,{
+            name:this.editSkillName,
+            description:this.editSkillDescription,
+            active:jobStatus 
+          }).catch(err=>{
+            console.log(err)
+            this.$q.notify({
+              color: 'negative',
+              icon:'error',
+              message: 'Failed to update row in database'
+            })
+            return
+          })
+
+          // refresh table again
+          this.getSkillTable()
+          
+          this.editSkillDialog = false
+          
+          this.$q.notify({
+            icon: 'done',
+            color: 'positive',
+            icon:'done',
+            message: 'Edited role'
+          })
+        }
+
+        // reset every enter
+        this.editSkilName=''
+        this.editSkillDescription=''
+
+    
+    },
+
     // need to make onEditSkillPopup and onEditSkill
   },
   data () {
@@ -642,6 +780,7 @@ export default {
       editJobRoleName:'',
       editJobRoleDescription:'',
       editRowId:0,
+      editJobStatusOption:'',
 
       assignDialog:false,
       assignJobRoleName:'',
@@ -654,6 +793,12 @@ export default {
       addSkillDialog:false,
       skillName:'',
       skillDescription:'',
+
+      editSkillDialog:false,
+      editSkillName:'',
+      editSkillDescription:'',
+      editSkillId:0,
+      editSkillStatusOption:'',
 
       //visibility of empty div. on mounted if have records then set this programatically to false.
       jobsEmpty:false,
@@ -718,6 +863,7 @@ export default {
         },
         { name: 'name', align: 'center', label: 'Skill Title', field: 'name', sortable: true },
         { name: 'description', align: 'center', label: 'Skill Description', field: 'description', sortable: true },
+        { name: 'status', align: 'center', label: 'Skill Status', field: 'status' },
         { name: 'buttons', align: 'center', field: 'buttons' },
         
       ],
