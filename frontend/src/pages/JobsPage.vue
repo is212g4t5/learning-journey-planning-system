@@ -1,8 +1,19 @@
 <template>
   <q-page class="q-px-xl">
+    <q-breadcrumbs class="q-mt-md">
+      <template v-slot:separator>
+        <q-icon
+          size="1.5em"
+          name="chevron_right"
+          color="primary"
+        />
+      </template>
+      <q-breadcrumbs-el to="/Jobs" >Job Roles</q-breadcrumbs-el>
+      <q-breadcrumbs-el>View Job Roles</q-breadcrumbs-el>
+    </q-breadcrumbs>
     <div
       class="text-center font-700"
-      style="color: #525252; font-size: 28px; margin-top: 30px"
+      style="color: #525252; font-size: 28px; "
     >
       View Job Roles
     </div>
@@ -11,7 +22,7 @@
       style="background-color: #a8a8ff; width: 75px; height: 2px"
     ></div>
 
-    <div v-for="job in jobData" :key="job.id" class="q-pa-md q-mt-md" style="background: #f5f5f5;cursor:pointer">
+    <div v-for="job in jobData" :key="job.id" class="q-pa-md q-mt-md" style="background: #f5f5f5;cursor:pointer" @click="$router.push(`/JobDetails/${job.id}`)">
       <div class="flex  no-wrap" >
         <div class="q-pa-lg q-mr-md" style="background: #d9d9d9">
           <q-icon name="o_person" style="font-size:125px"></q-icon>
