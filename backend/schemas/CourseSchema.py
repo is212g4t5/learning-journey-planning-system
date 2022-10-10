@@ -7,3 +7,10 @@ class CourseSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Course
         include_fk =True
+
+#Course with Skills Schema
+class CourseWithSkillsSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Course
+        include_fk =True
+    skills = ma.Nested('SkillSchema', many=True)
