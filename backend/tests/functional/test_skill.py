@@ -48,9 +48,11 @@ def test_update_skill_by_id(test_get_client):
 
 
 
-def test_skill_role_by_id(test_get_client):
-    response = test_get_client.delete(url+"1")
+def test_delete_skill_by_id(test_get_client):
+    response = test_get_client.delete(url+"2")
     assert response.status_code==200,"response is "+str(response.status_code)
+    res = json.loads(response.data.decode('utf-8'))
+    assert res["active"] == False, str(res["active"]) +" == " +str(False) + "\nres is "+str(res)
     
 
 
