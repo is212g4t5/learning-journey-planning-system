@@ -1,4 +1,5 @@
-from util import post_testing, get_all_testing
+
+from util import post_testing, get_all_testing,get_id_testing
 import json
 
 
@@ -16,6 +17,7 @@ def test_post_skills(test_post_client):
     
 def test_get_skills(test_get_client):
     get_all_testing(test_get_client,url,3)
+    get_id_testing(test_get_client,url+"1","name","TestSkill1")
 
 def test_update_skill_by_id(test_get_client):
     put_data={

@@ -61,9 +61,12 @@ def remove_skill(id):
 @skill_api.route('/', methods=['GET'])
 def get_skills():
     all_skills = Skill.query.all()
-    try:
-        return skills_schema.dump(all_skills),200
-    except Exception as e:
-        return jsonify({
-            "message": "Unable to retrieve data. "+str(e)
-        }), 500
+    return skills_schema.dump(all_skills),200
+
+#Get skill by id
+@skill_api.route('/<id>', methods=['GET'])
+def get_skill(id):
+    skill= Skill.query.get(id)
+    return skill_schema.jsonify(skill),200
+
+
