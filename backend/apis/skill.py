@@ -18,21 +18,17 @@ def add_skill():
     description = data['description']
     active = data['active']
 
-    if (Skill.query.filter_by(name=name).first()):
-        return jsonify(
-            {"message": "Skill already exists."}
-        ), 400
+    # if (Skill.query.filter_by(name=name).first()):
+    #     return jsonify(
+    #         {"message": "Skill already exists."}
+    #     ), 400
 
     new_skill = Skill(name, description, active)
 
-    try:
-        db.session.add(new_skill)
-        db.session.commit()
-        return skill_schema.jsonify(new_skill),201
-    except Exception as e:
-        return jsonify({
-            "message": "Unable to add skill to database. "+str(e)
-        }), 500
+
+    db.session.add(new_skill)
+    db.session.commit()
+    return skill_schema.jsonify(new_skill),201
 
 #Update Skill
 @skill_api.route('/<id>', methods=['PUT'])

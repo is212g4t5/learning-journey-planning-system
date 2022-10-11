@@ -3,7 +3,7 @@
 from email import message
 from werkzeug.exceptions import HTTPException, BadRequest
 from pprint import pprint
-from sqlalchemy.exc import DatabaseError
+from sqlalchemy.exc import DatabaseError,IntegrityError
 from flask import Flask, jsonify
 from flask_cors import CORS
 import os
@@ -90,9 +90,12 @@ def create_app():
             code = error.code
             if isinstance(error, BadRequest):
                 error =  "Missing Body or invalid JSON syntax"
-      
+        if isinstance(error, IntegrityError):
+            code=400
+            error = error.__cause__
         elif isinstance(error, DatabaseError):
             error = error.__cause__
+
     
         return jsonify(message= str(error)), code
 
