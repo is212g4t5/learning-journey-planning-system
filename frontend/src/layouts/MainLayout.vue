@@ -19,7 +19,7 @@
       </q-toolbar>
     </q-header> -->
 
-    <q-header class="q-px-sm " style="background-color:white;;color:black" >
+    <q-header class="q-px-sm " style="background-color:white;;color:black" v-if="!$route.fullPath.includes('login')" >
       <q-toolbar>
         <!-- <q-btn
           flat
@@ -41,7 +41,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      
+      v-if="!$route.fullPath.includes('login')"
       :width="250"
       
       :mini="miniState"
@@ -50,7 +50,77 @@
       
     >
       <q-list class="" style="background-color:#f2f2f2;height:100%">
+        <q-item
+        clickable
+        tag="a"
+        :to="'/learning_journey/'+this.$store.state.user"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="auto_stories" />
+        </q-item-section>
 
+        <q-item-section>
+          <q-item-label>Learning Journeys</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+      <q-item
+        clickable
+        tag="a"
+        :to="'/Jobs'"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="work" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>Job Roles</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+      <q-item
+        clickable
+        tag="a"
+        :to="'/HR'"
+        v-if="this.$store.state.user == 'hr'"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="person" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>HR Management</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+      <q-item
+        clickable
+        tag="a"
+        :to="'/login'"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="logout" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>Logout</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+
+<!-- 
         <q-item
         v-for="link in essentialLinks"
         :key="link.title"
@@ -73,12 +143,8 @@
           
         </q-item-section>
       </q-item>
+        -->
        
-        <!-- <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        /> -->
       </q-list>
     </q-drawer>
 
@@ -92,35 +158,27 @@
 import EssentialLink from 'components/EssentialLink.vue'
 
 const linksData = [
+
   {
-    title: 'Home',
-    caption: 'quasar.dev',
-    icon: 'dashboard',
-    link: '/home'
-  },
-  {
-    title: 'Courses',
-    caption: 'github.com/quasarframework',
+    title: 'Learning Journeys',
     icon: 'auto_stories',
-    link: '/Courses'
+    link: '/learning_journey'
   },
   {
     title: 'Job Roles',
-    caption: 'github.com/quasarframework',
+  
     icon: 'work',
     link: '/Jobs'
   },
   {
     title: 'HR Management',
-    caption: 'github.com/quasarframework',
     icon: 'person',
-    link: '/HR'
+    link: '/HR',
   },
   {
     title: 'Logout',
-    caption: 'forum.quasar.dev',
     icon: 'logout',
-    link: ''
+    link: '/login'
   },
   
 ]
@@ -140,7 +198,7 @@ export default {
   },
   mounted(){
 
-  this.$router.push('/home')
+  this.$router.push('/login')
   }
 }
 </script>

@@ -66,7 +66,7 @@
                     {{ props.row.description }}
                 </q-td>
                 <q-td key="skills" :props="props">
-                  <q-badge v-for="(skill,index) in props.row.skills" :key="index" color="orange" class="q-mr-xs">
+                  <q-badge v-for="(skill,index) in props.row.skills" :key="index" v-if="skill.active==true" color="orange" class="q-mr-xs">
                     {{skill.name}}
                   </q-badge>
                 </q-td>
@@ -81,8 +81,8 @@
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditJobPopup(props.row)"></q-btn>
-                    <q-btn label="Assign" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
-                    <q-btn label="Delete" color="red" outline no-caps @click="deleteJob(props.row)"></q-btn>
+                    <q-btn label="Assign Skills" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
+                    <q-btn label="Remove" color="red" outline no-caps @click="deleteJob(props.row)"></q-btn>
                 </q-td>
                 
               </q-tr>
@@ -130,7 +130,7 @@
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditSkillPopup(props.row)"></q-btn>
-                    <q-btn label="Delete" color="red" outline no-caps @click="deleteSkill(props.row)"></q-btn>
+                    <q-btn label="Remove" color="red" outline no-caps @click="deleteSkill(props.row)"></q-btn>
                 </q-td>
                 
               </q-tr>
@@ -486,6 +486,7 @@ export default {
           // refresh table again
           this.getJobTable()
           
+          
           this.editJobDialog = false
           
           this.$q.notify({
@@ -518,7 +519,10 @@ export default {
       //store all skills as options 
       let skillsArray = []
       this.skillData.forEach(element => {
-        skillsArray.push(element.name)
+        if (element.active == true){
+          skillsArray.push(element.name)
+        }
+        
       });
       this.skillOptionsArray = skillsArray
 
@@ -527,7 +531,14 @@ export default {
       let skillsOptionsSelected = []
       this.jobData.forEach(element => {
         if (element.id == row.id){
-          skillsOptionsSelected = element.skills
+          console.log('ELEMENT SKILLS OPTIONS SELECTED', element)
+          element.skills.forEach(indivSkill => {
+            if (indivSkill.active == true){
+              skillsOptionsSelected.push(indivSkill)
+              // console.log(indivSkill)
+            }
+          });
+          // skillsOptionsSelected = element.skills
           return
         }
       });
@@ -596,7 +607,7 @@ export default {
         this.$q.notify({
           color: 'negative',
           icon:'error',
-          message: 'Failed to delete row'
+          message: 'Failed to delete job'
         })
         return
       })
@@ -622,11 +633,11 @@ export default {
       let currSkillData = []
 
       skillData.data.forEach(element => {
-        if (element.active == true){
+        
           this.skillsEmpty = false
           currSkillData.push(element)
           
-        }
+        
       });
 
       
@@ -677,6 +688,7 @@ export default {
 
           // refresh table again
           this.getSkillTable()
+
           
           this.addSkillDialog = false
           
@@ -732,7 +744,7 @@ export default {
         }else{
           jobStatus = false
         }
-          let updateRes = await axios.put(`http://127.0.0.1:5000/api/skills/${this.editSkillId}/`,{
+          let updateRes = await axios.put(`http://127.0.0.1:5000/api/skills/${this.editSkillId}`,{
             name:this.editSkillName,
             description:this.editSkillDescription,
             active:jobStatus 
@@ -748,6 +760,7 @@ export default {
 
           // refresh table again
           this.getSkillTable()
+          this.getJobTable()
           
           this.editSkillDialog = false
           
@@ -765,6 +778,30 @@ export default {
 
     
     },
+
+    async deleteSkill(row){
+      let deleteData = await axios.delete(`http://127.0.0.1:5000/api/skills/${row.id}`).catch(err=>{
+        console.log(err)
+        this.$q.notify({
+          color: 'negative',
+          icon:'error',
+          message: 'Failed to delete skill'
+        })
+        return
+      })
+
+      this.$q.notify({
+        icon: 'done',
+        color: 'positive',
+        icon:'done',
+        message: 'Skill Made Inactive'
+      })
+
+      // refresh table again
+      this.getJobTable()
+      this.getSkillTable()
+
+    }
 
     // need to make onEditSkillPopup and onEditSkill
   },
@@ -927,6 +964,7 @@ export default {
 
     this.getJobTable()
     this.getSkillTable()
+      
 
   }
   
