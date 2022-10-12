@@ -10,7 +10,9 @@ def post_testing(test_client,url,test_data,key,value):
     assert response.status_code==201,str(response.status_code) +" == " +str(201) + "\nresponse is "+str(response.status_code)
     res = json.loads(response.data.decode('utf-8'))
     assert res[key] == value, str(res[key]) +" == " +str(value) + "\nres is "+str(res)
-   
+    response_dupe = test_client.post(url,json=test_data) 
+    assert response_dupe.status_code==400,str(response_dupe.status_code) +" == " +str(400) + "\nresponse is "+str(response.status_code)
+
     #test bad request 400 for empty body
     response = test_client.post(url,json={})
     assert response.status_code==400, str(response.status_code) +" == " +str(400) + "\nresponse is "+str(response.status_code)
