@@ -4,9 +4,9 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'home', component: () => import('pages/Index.vue') },
+      { path: 'login', component: () => import('src/pages/LoginPage.vue') },
       { path: 'HR', component: () => import('pages/HRManagement_Page.vue') },
-      { path: 'Courses', component: () => import('pages/CoursesPage.vue') },
+      { path: 'learning_journey', component: () => import('src/pages/LearningJourneyPage.vue') },
       { path: 'Jobs', component: () => import('pages/JobsPage.vue') },
       { path: 'JobDetails/:id', component: () => import('pages/JobDetailsPage.vue') },
     ]

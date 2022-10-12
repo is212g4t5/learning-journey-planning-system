@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <h1>Courses Page</h1>
+    <h1>Learning Journey Page</h1>
   </q-page>
 </template>
 

@@ -41,7 +41,7 @@
           <div class="text-grey-7" style="font-size:24px">Skills Required:</div>
           <div class="row">
             <div v-for="skill in jobData.skills" :key="skill.name" class="q-pa-sm" >
-              <q-btn >{{skill.name}}</q-btn>
+              <q-btn v-if="skill.active==true">{{skill.name}}</q-btn>
             </div>
             
 

@@ -19,7 +19,7 @@
       </q-toolbar>
     </q-header> -->
 
-    <q-header class="q-px-sm " style="background-color:white;;color:black" >
+    <q-header class="q-px-sm " style="background-color:white;;color:black" v-if="!$route.fullPath.includes('login')" >
       <q-toolbar>
         <!-- <q-btn
           flat
@@ -41,7 +41,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      
+      v-if="!$route.fullPath.includes('login')"
       :width="250"
       
       :mini="miniState"
@@ -92,35 +92,29 @@
 import EssentialLink from 'components/EssentialLink.vue'
 
 const linksData = [
+
   {
-    title: 'Home',
-    caption: 'quasar.dev',
-    icon: 'dashboard',
-    link: '/home'
-  },
-  {
-    title: 'Courses',
-    caption: 'github.com/quasarframework',
+    title: 'Learning Journeys',
     icon: 'auto_stories',
-    link: '/Courses'
+    link: '/learning_journey'
   },
   {
     title: 'Job Roles',
-    caption: 'github.com/quasarframework',
+  
     icon: 'work',
     link: '/Jobs'
   },
   {
     title: 'HR Management',
-    caption: 'github.com/quasarframework',
+ 
     icon: 'person',
     link: '/HR'
   },
   {
     title: 'Logout',
-    caption: 'forum.quasar.dev',
+
     icon: 'logout',
-    link: ''
+    link: '/login'
   },
   
 ]
@@ -140,7 +134,7 @@ export default {
   },
   mounted(){
 
-  this.$router.push('/home')
+  // this.$router.push('/login')
   }
 }
 </script>
