@@ -17,7 +17,7 @@
       Login As...
     </div>
     <div
-      class="q-mx-auto q-mb-md"
+      class="q-mx-auto q-mb-lg"
       style="background-color: #a8a8ff; width: 75px; height: 2px"
     ></div>
 
@@ -95,7 +95,7 @@
 
         <q-card-actions >
           <div class="q-mx-auto q-gutter-x-md">
-            <q-btn label="Login" v-close-popup no-caps size="md" style="width:10vw;background:#afdfa5 " to="/learning_journey" />
+            <q-btn label="Login" v-close-popup no-caps size="md" style="width:10vw;background:#afdfa5 " @click="handleRedirect()" />
             <q-btn label="Cancel" v-close-popup no-caps size="md" style="width:10vw;background:#e4e4e4" />
           </div>
           
@@ -115,8 +115,30 @@ export default {
     login(user){
       this.loginDialog = true
       this.user = user
+    },
+    handleRedirect(){
+      if (this.user == 'Human Resource'){
+        this.$store.state.user = 'hr'
+        this.$router.push('/learning_journey/hr')
+      }else if (this.user == 'Manager'){
+        this.$store.state.user = 'manager'
+        this.$router.push('/learning_journey/manager')
+      }else if (this.user == 'Other User'){
+        this.$store.state.user = 'user'
+        this.$router.push('/learning_journey/user')
+      }
     }
   },
+  mounted(){
+    // if (this.user == 'Human Resource'){
+    //   this.$store.state.user = 'hr'
+    // }else if (this.user == 'Manager'){
+    //   this.$store.state.user = 'manager'
+    // }else if (this.user == 'Other User'){
+    //   this.$store.state.user = 'user'
+    // }
+    
+  },  
   data () {
     return {
       loginDialog:false,

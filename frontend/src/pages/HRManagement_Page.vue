@@ -964,6 +964,7 @@ export default {
 
     this.getJobTable()
     this.getSkillTable()
+      
 
   }
   

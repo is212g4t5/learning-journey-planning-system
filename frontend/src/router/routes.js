@@ -6,7 +6,7 @@ const routes = [
     children: [
       { path: 'login', component: () => import('src/pages/LoginPage.vue') },
       { path: 'HR', component: () => import('pages/HRManagement_Page.vue') },
-      { path: 'learning_journey', component: () => import('src/pages/LearningJourneyPage.vue') },
+      { path: 'learning_journey/:role', component: () => import('src/pages/LearningJourneyPage.vue') },
       { path: 'Jobs', component: () => import('pages/JobsPage.vue') },
       { path: 'JobDetails/:id', component: () => import('pages/JobDetailsPage.vue') },
     ]

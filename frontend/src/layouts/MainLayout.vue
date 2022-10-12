@@ -50,7 +50,77 @@
       
     >
       <q-list class="" style="background-color:#f2f2f2;height:100%">
+        <q-item
+        clickable
+        tag="a"
+        :to="'/learning_journey/'+this.$store.state.user"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="auto_stories" />
+        </q-item-section>
 
+        <q-item-section>
+          <q-item-label>Learning Journeys</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+      <q-item
+        clickable
+        tag="a"
+        :to="'/Jobs'"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="work" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>Job Roles</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+      <q-item
+        clickable
+        tag="a"
+        :to="'/HR'"
+        v-if="this.$store.state.user == 'hr'"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="person" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>HR Management</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+      <q-item
+        clickable
+        tag="a"
+        :to="'/login'"
+      >
+        <q-item-section
+          avatar
+        >
+          <q-icon name="logout" />
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>Logout</q-item-label>
+          
+        </q-item-section>
+      </q-item>
+
+
+<!-- 
         <q-item
         v-for="link in essentialLinks"
         :key="link.title"
@@ -73,12 +143,8 @@
           
         </q-item-section>
       </q-item>
+        -->
        
-        <!-- <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        /> -->
       </q-list>
     </q-drawer>
 
@@ -106,13 +172,11 @@ const linksData = [
   },
   {
     title: 'HR Management',
- 
     icon: 'person',
-    link: '/HR'
+    link: '/HR',
   },
   {
     title: 'Logout',
-
     icon: 'logout',
     link: '/login'
   },
@@ -134,7 +198,7 @@ export default {
   },
   mounted(){
 
-  // this.$router.push('/login')
+  this.$router.push('/login')
   }
 }
 </script>

@@ -6,6 +6,15 @@
 
 <script>
 export default {
-  
+  data () {
+    return {
+    }
+  },
+  methods: {
+  },
+  mounted(){
+    
+    console.log('params route:',this.$router.currentRoute.params.role)
+  }
 }
 </script>
