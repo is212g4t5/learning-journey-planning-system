@@ -134,7 +134,7 @@
                 </q-td>
                 
               </q-tr>
-              
+
             </template>
           </q-table>
 
@@ -381,7 +381,7 @@ export default {
             description:this.jobRoleDescription,
             active:true 
           }).catch(err=>{
-            console.log(err)
+            console.log('STATUS CODE',err.stats)
             this.$q.notify({
               color: 'negative',
               icon:'error',
@@ -758,12 +758,17 @@ export default {
             description:this.editSkillDescription,
             active:jobStatus 
           }).catch(err=>{
-            console.log(err)
+            console.log('STATUS CODE',err.response.status)
             editSkillPass = false
+
+            let errMessage = 'Failed to update skill in database'
+            if (err.response.status == 400){
+              errMessage = 'Skill name exists!'
+            }
             this.$q.notify({
               color: 'negative',
               icon:'error',
-              message: 'Failed to update skill in database'
+              message: errMessage
             })
             return
           })
