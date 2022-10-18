@@ -130,7 +130,9 @@
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditSkillPopup(props.row)"></q-btn>
+
                     <q-btn v-if="props.row.active==true" label="Remove" color="red" outline no-caps @click="deleteSkill(props.row)"></q-btn>
+
                 </q-td>
                 
               </q-tr>
@@ -752,7 +754,9 @@ export default {
           jobStatus = false
         }
 
+
           let editSkillPass = true
+
           let updateRes = await axios.put(`http://127.0.0.1:5000/api/skills/${this.editSkillId}`,{
             name:this.editSkillName,
             description:this.editSkillDescription,
