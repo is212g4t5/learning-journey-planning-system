@@ -44,7 +44,7 @@
 
           <div class="row">
             <div v-for="skill in jobData.skills" :key="skill.name" class="q-pa-sm" >
-              <q-btn v-if="skill.active==true">{{skill.name}}</q-btn>
+              <q-btn v-if="skill.active==true" @click="redirectToCoursePage(skill)">{{skill.name}}</q-btn>
             </div>
             
 
@@ -60,6 +60,12 @@
 <script>
 import axios from "axios";
 export default {
+  methods: {
+    redirectToCoursePage(skill){
+      console.log(skill)
+      this.$router.push(`/courses/${skill.id}`)
+    }
+  },
   data() {
     return {
       jobData: {},

@@ -15,7 +15,7 @@ export default {
   mounted(){
     console.log('vuex user',this.$store.state.user)
     console.log('storage token',localStorage.token)
-    if (localStorage.token == undefined || localStorage.token != this.$store.state.user){
+    if (localStorage.token == undefined){
       this.$router.push('/login')
     }
     
