@@ -40,6 +40,7 @@
 
           <div class="text-grey-7" style="font-size:24px">Skills Required:</div>
           <div v-if="noSkills" class="font-size:24px">Hey there! There are no skills required for <strong>{{jobData.name}}</strong></div>
+          
 
           <div class="row">
             <div v-for="skill in jobData.skills" :key="skill.name" class="q-pa-sm" >
