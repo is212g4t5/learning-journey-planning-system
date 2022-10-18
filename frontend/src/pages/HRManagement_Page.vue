@@ -356,12 +356,12 @@
             <form @submit.prevent.stop="onEditSkill" >
               <div class="q-mx-md">
                 <div class="font-size-16 q-mb-xs">Skill Name</div>
-                <q-input ref="editSkillName" outlined v-model="editSkillName" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Name" style="font-size:16px" />
+                <q-input ref="editSkillName" outlined v-model="editSkillName" :disable="editSkillStatusOption=='Inactive'" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Name" style="font-size:16px" />
               </div>
 
               <div class="q-mx-md ">
                 <div class="font-size-16 q-mb-xs">Skill Description</div>
-                <q-input ref="editSkillDescription" type="textarea" outlined v-model="editSkillDescription" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Description" style="font-size:16px" />
+                <q-input ref="editSkillDescription" type="textarea" outlined v-model="editSkillDescription" :disable="editSkillStatusOption=='Inactive'" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Description" style="font-size:16px" />
                 
                   <div class="font-size-16 q-mb-xs q-mt-md">Skill Status</div>
                 <q-select
