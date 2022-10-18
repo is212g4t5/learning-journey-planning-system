@@ -764,6 +764,8 @@ export default {
             let errMessage = 'Failed to update skill in database'
             if (err.response.status == 400){
               errMessage = 'Skill name exists!'
+
+              
             }
             this.$q.notify({
               color: 'negative',
