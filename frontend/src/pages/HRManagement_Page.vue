@@ -96,7 +96,7 @@
             <div class="text-center" v-if="skillsEmpty">
               <Lottie :options="defaultOptions"  style="width:20vw" />
               <div class="font-700 font-size-28">No Skills Found!</div>
-              <div class="font-500 font-size-14 myTextGrey">There are no roles in the system. Start adding <br> new roles to view them.</div>
+              <div class="font-500 font-size-14 myTextGrey">There are no skills in the system. Start adding <br> new skills to view them.</div>
             </div>
 
 
