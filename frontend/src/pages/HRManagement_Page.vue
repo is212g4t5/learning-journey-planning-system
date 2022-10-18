@@ -82,7 +82,7 @@
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditJobPopup(props.row)"></q-btn>
                     <q-btn label="Assign Skills" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
-                    <q-btn label="Remove" color="red" outline no-caps @click="deleteJob(props.row)"></q-btn>
+                    <q-btn v-if="props.row.active==true" label="Remove" color="red" outline no-caps @click="deleteJob(props.row)"></q-btn>
                 </q-td>
                 
               </q-tr>
