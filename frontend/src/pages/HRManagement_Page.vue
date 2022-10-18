@@ -181,7 +181,7 @@
                   <q-badge v-if="props.row.status == 'Active'" color="green" class="q-mr-xs">
                     Active
                   </q-badge>
-                  <q-badge v-else-if="props.row.status == 'Pending'" color="yellow" class="q-mr-xs">
+                  <q-badge v-else-if="props.row.status == 'Pending'" color="yellow-9" class="q-mr-xs">
                     Pending
                   </q-badge>
                   <q-badge v-else-if="props.row.status == 'Retired'" color="red" class="q-mr-xs">
