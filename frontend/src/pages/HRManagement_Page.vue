@@ -154,7 +154,7 @@
             
             <q-table
             v-else
-            title="Skills"
+            title="Courses"
             :data="courseData"
             :columns="courseColumns"
             row-key="name"
@@ -177,6 +177,12 @@
                 <q-td key="type" :props="props">
                     {{ props.row.type }}
                 </q-td>
+               
+                 <q-td key="skills" :props="props">
+                  <q-badge v-for="(skill,index) in props.row.skills" :key="index" v-if="skill.active==true" color="orange" class="q-mr-xs">
+                    {{skill.name}}
+                  </q-badge>
+                </q-td>
                 <q-td key="status" :props="props">
                   <q-badge v-if="props.row.status == 'Active'" color="green" class="q-mr-xs">
                     Active
@@ -190,7 +196,7 @@
                 </q-td>
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
-                  <q-btn v-if="props.row.status=='Active' || props.row.status=='Pending'" label="Assign Skills" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
+                  <q-btn v-if="props.row.status=='Active' || props.row.status=='Pending'" label="Assign Skills" color="green" outline no-caps @click="openAssignSkillToCoursePopup(props.row)"></q-btn>
 
                 </q-td>
                 
@@ -384,6 +390,49 @@
             </form>
           </q-card>
         </q-dialog>
+
+         <!-- assign skill to course dialog -->
+         <q-dialog v-model="assignSkillToCourseDialog">
+          <q-card class="q-pa-md" style="width:50vw">
+            <div class="text-center font-700" style="color:#525252; font-size:28px">Assign Skill To Course</div>
+            <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+            <form @submit.prevent.stop="onAssignSkillToCourse" >
+              <div class="q-mx-md">
+                <div class="font-size-16 q-mb-xs">Course Name</div>
+                <q-input ref="assignSkillToCourse" outlined v-model="assignSkillToCourse" :rules="[val => !!val || 'Field is required']" class=""  style="font-size:16px" disable />
+              </div>
+
+              <div class="q-mx-md q-mt-md">
+                <div class="font-size-16 q-mb-xs">Course Description</div>
+                <q-input ref="assignSkillToCourseDescription" type="textarea" outlined v-model="assignSkillToCourseDescription" :rules="[val => !!val || 'Field is required']" class=""  style="font-size:16px" disable />
+              </div>
+
+              <div class="q-mx-md ">
+                <div class="font-size-16 q-mb-xs">Select Skills</div>
+                <q-select
+                
+                autofocus
+                filled
+                v-model="skillOptions"
+                multiple
+                :options="skillOptionsArray"
+                :rules="[val => !!val || 'Field is required']"
+                style="font-size:16px"
+              />
+              </div>
+             
+           
+            
+
+            <q-card-actions align="right" class="q-mt-sm">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn  label="Assign" color="primary" type="submit" />
+            </q-card-actions>
+
+            </form>
+          </q-card>
+        </q-dialog>
     
   </q-page>
 </template>
@@ -439,6 +488,8 @@ export default {
 
           // refresh table again
           this.getJobTable()
+    this.getSkillTable()
+    this.getCoursesTable()
           
           this.addJobDialog = false
           
@@ -535,6 +586,8 @@ export default {
 
           // refresh table again
           this.getJobTable()
+    this.getSkillTable()
+    this.getCoursesTable()
           
           
           this.editJobDialog = false
@@ -557,8 +610,6 @@ export default {
 
     
     },
-
-    
     openAssignPopup(row){
       console.log(row)
 
@@ -641,7 +692,8 @@ export default {
         // this.skillOptions = []
         this.assignDialog = false
         this.getJobTable()
-          
+        this.getSkillTable()
+        this.getCoursesTable()
         this.$q.notify({
           icon: 'done',
           color: 'positive',
@@ -675,7 +727,8 @@ export default {
 
       // refresh table again
       this.getJobTable()
-
+    this.getSkillTable()
+    this.getCoursesTable()
 
     },
 
@@ -741,7 +794,9 @@ export default {
           })
 
           // refresh table again
-          this.getSkillTable()
+          this.getJobTable()
+    this.getSkillTable()
+    this.getCoursesTable()
 
           
           this.addSkillDialog = false
@@ -825,8 +880,9 @@ export default {
           })
 
           // refresh table again
-          this.getSkillTable()
           this.getJobTable()
+        this.getSkillTable()
+        this.getCoursesTable()
           
           this.editSkillDialog = false
           
@@ -873,7 +929,7 @@ export default {
     },
 
     async getCoursesTable(){
-      let courseData = await axios.get('http://127.0.0.1:5000/api/courses')
+      let courseData = await axios.get('http://127.0.0.1:5000/api/courses/skills')
       this.coursesEmpty = true
       let currCourseData = []
       if (courseData.data.length>0){
@@ -887,6 +943,104 @@ export default {
       
       this.courseData = currCourseData
       console.log('courseData:',this.courseData)
+    },
+
+    openAssignSkillToCoursePopup(row){
+      console.log(row)
+
+      //open dialog, store all the disabled fields
+      this.assignSkillToCourseDialog = true
+      this.assignSkillToCourse = row.name
+      this.assignSkillToCourseDescription = row.description
+      this.assignRowId = row.id
+
+      console.log('ASSIGN ROLE ID', this.assignRowId)
+
+      //store all skills as options 
+      let skillsArray = []
+      this.skillData.forEach(element => {
+        if (element.active == true){
+          skillsArray.push(element.name)
+        }
+        
+      });
+      this.skillOptionsArray = skillsArray
+
+      console.log('SKILLS ARRAY:',skillsArray)
+      console.log('COURSE DATA:',this.courseData)
+
+      let skillsOptionsSelected = []
+      this.courseData.forEach(element => {
+        if (element.id == row.id){
+          console.log('ELEMENT SKILLS OPTIONS SELECTED', element)
+          element.skills.forEach(indivSkill => {
+            if (indivSkill.active == true){
+              skillsOptionsSelected.push(indivSkill)
+              // console.log(indivSkill)
+            }
+          });
+          // skillsOptionsSelected = element.skills
+          return
+        }
+      });
+
+      console.log('skill options selected',skillsOptionsSelected)
+
+      let skillOptionsSelectedNames = []
+      skillsOptionsSelected.forEach(element => {
+        console.log(element)
+        skillOptionsSelectedNames.push(element.name)
+      }); 
+
+      console.log(skillOptionsSelectedNames)
+
+      this.skillOptions = skillOptionsSelectedNames
+
+
+    },
+    async onAssignSkillToCourse(){
+      if (this.skillOptions.length == 0){
+        this.$q.notify({
+          color: 'negative',
+          icon:'error',
+          message: 'Must select at least 1 skill!'
+        })
+      }else{
+        // have options, get the array of option IDs from skillOptions names
+        console.log(this.skillOptions)
+
+        let skillOptionIds = []
+        this.skillData.forEach(element => {
+          if (this.skillOptions.includes(element.name) ){
+            skillOptionIds.push(element.id)
+          }
+        });
+
+
+        console.log('course id',this.assignRowId,'skill option ids:',skillOptionIds)
+
+        let assignRes = await axios.put(`http://127.0.0.1:5000/api/courses/${this.assignRowId}/skills`,{
+          skill_ids:skillOptionIds
+        })
+        
+        // console.log(assignRes)
+
+        // this.skillOptions = []
+        this.assignDialog = false
+        this.getJobTable()
+        this.getSkillTable()
+        this.getCoursesTable()
+          
+        this.$q.notify({
+          icon: 'done',
+          color: 'positive',
+          icon:'done',
+          message: 'Assigned skills to course'
+        })
+
+
+
+      }
     },
 
   },
@@ -910,6 +1064,11 @@ export default {
       assignRowId:0,
       skillOptionsArray:[], //for the skill options
       skillOptions:'skill1', //v-model
+
+      //for assign skill to course
+      assignSkillToCourseDialog:false,
+      assignSkillToCourse:'',
+      assignSkillToCourseDescription:'',
 
 
       addSkillDialog:false,
@@ -1033,6 +1192,7 @@ export default {
         { name: 'category', align: 'center', label: 'Course Category', field: 'category', sortable: true },
         { name: 'type', align: 'center', label: 'Course Type', field: 'type', sortable: true },
         { name: 'description', align: 'center', label: 'Course Description', field: 'description', sortable: true ,style: "max-width:400px;white-space: normal;" },
+        { name: 'skills', align: 'center', label: 'Course Skills', field: 'skills' },
         { name: 'status', align: 'center', label: 'Course Status', field: 'status' },
         { name: 'buttons', align: 'center', field: 'buttons' },
         
