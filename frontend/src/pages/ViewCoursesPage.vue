@@ -29,6 +29,14 @@
       ></div>
 
 
+      <div class="text-center" v-if="coursesWithSkill.length==0">
+        <Lottie :options="defaultOptions" style="width:20vw" />
+        <div class="font-700 font-size-28">No Courses Offered For {{currSkillInfo.name}} Yet !</div>
+        <div class="font-500 font-size-14 myTextGrey">Please check back another time.</div>
+      </div>
+      
+
+
       <div class="flex items-center justify-around">
         <div v-for="course in coursesWithSkill" :key="course.id" class="" style="width:350px;height:550px;background:white;border-radius:5px;position:relative">
           <img src="~assets/courseImage.png" style="width:100%;border-top-left-radius:5px;border-top-right-radius:5px" alt="">
@@ -71,13 +79,23 @@
 
 <script>
 import axios from "axios";
+import Lottie from 'vue-lottie';
+import * as animationData from './empty.json';
 export default {
   data () {
     return {
       currSkillInfo:{},
       coursesWithSkill:[],
-      currSkillId:''
+      currSkillId:'',
+      defaultOptions: {
+        animationData: animationData.default,
+        loop:true,
+        autoplay:true
+      },
     }
+  },
+  components: {
+    Lottie
   },
   methods: {
   },
@@ -97,16 +115,14 @@ export default {
     this.currSkillId = currSkillId
 
     let currSkillInfo = {}
-
     let coursesWithSkill = []
 
     courseData.data.forEach(element => {
-      let courseHasSkill = false
         if (element.skills.length>0){
           element.skills.forEach(skill => {
             if (skill.id == currSkillId && skill.active == true){
               coursesWithSkill.push(element)
-              currSkillInfo = skill
+             
             }
           });
         }
@@ -114,29 +130,22 @@ export default {
 
     console.log('all courses with skill:',coursesWithSkill)
     console.log('current skill details:',currSkillInfo)
-    this.currSkillInfo = currSkillInfo
+
     this.coursesWithSkill = coursesWithSkill
-    
-    // let currJobData = null;
-    // roleData.data.forEach((element) => {
-    //   if (element.id == this.$route.params.id) {
-    //     currJobData=element
-    //     return
-    //   }
-    // });
 
-    // this.jobData = currJobData;
-    
-    // this.jobData.forEach(element => {
-    //   element.skills.forEach(skill => {
-    //     if (skill.active == true){
-    //       this.noSkills = false
-    //       return
-    //     }
-    //   });
-    // });
 
-    // console.log("job data:", this.jobData);
+    let allSkills = await axios.get("http://127.0.0.1:5000/api/skills");
+
+    console.log('all skill data:', allSkills)
+    allSkills.data.forEach(element => {
+      if (element.id == currSkillId){
+        this.currSkillInfo = element
+      }
+    });
+
+    // this.currSkillInfo = currSkillInfo
+    console.log()
+   
     
   }
 }
