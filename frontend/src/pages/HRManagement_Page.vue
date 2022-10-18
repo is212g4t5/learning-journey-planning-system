@@ -765,7 +765,7 @@ export default {
             if (err.response.status == 400){
               errMessage = 'Skill name exists!'
 
-              
+
             }
             this.$q.notify({
               color: 'negative',
@@ -962,7 +962,7 @@ export default {
       },
     }
   },
-  name: 'Page1',
+
   components: {
     Lottie
   },

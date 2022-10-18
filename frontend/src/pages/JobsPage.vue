@@ -22,6 +22,13 @@
       style="background-color: #a8a8ff; width: 75px; height: 2px"
     ></div>
 
+    <div class="text-center" v-if="jobData.length==0">
+        <Lottie :options="defaultOptions" style="width:20vw" />
+        <div class="font-700 font-size-28">No Roles Found!</div>
+        <div class="font-500 font-size-14 myTextGrey">There are no roles in the system.</div>
+      </div>
+
+
     <div v-for="job in jobData" :key="job.id" class="q-pa-md q-mt-md" style="background: #f5f5f5;cursor:pointer" @click="$router.push(`/JobDetails/${job.id}`)">
       <div class="flex  no-wrap" >
         <div class="q-pa-lg q-mr-md" style="background: #d9d9d9">
@@ -54,11 +61,21 @@
 
 <script>
 import axios from "axios";
+import Lottie from 'vue-lottie';
+import * as animationData from './empty.json';
 export default {
   data() {
     return {
       jobData: [],
+      defaultOptions: {
+        animationData: animationData.default,
+        loop:true,
+        autoplay:true
+      },
     };
+  },
+  components: {
+    Lottie
   },
   async mounted() {
     let roleData = await axios.get("http://127.0.0.1:5000/api/roles");
