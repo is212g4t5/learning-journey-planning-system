@@ -144,15 +144,60 @@
 
 
           <!-- courses panel -->
-          <q-tab-panel name="View Courses" v-show="coursesEmpty">
+          <q-tab-panel name="View Courses">
             
             <div class="text-center" v-if="coursesEmpty">
               <Lottie :options="defaultOptions"  style="width:20vw" />
               <div class="font-700 font-size-28">No Courses Found!</div>
               <div class="font-500 font-size-14 myTextGrey">There are no courses in the system.</div>
             </div>
+            
+            <q-table
+            v-else
+            title="Skills"
+            :data="courseData"
+            :columns="courseColumns"
+            row-key="name"
+            :rows-per-page-options="[10]"
+          >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="id" :props="props">
+                  {{ props.row.id }}
+                </q-td>
+                <q-td key="name" :props="props">
+                    {{ props.row.name }}
+                </q-td>
+                <q-td key="description" :props="props">
+                    {{ props.row.description }}
+                </q-td>
+                <q-td key="category" :props="props">
+                    {{ props.row.category }}
+                </q-td>
+                <q-td key="type" :props="props">
+                    {{ props.row.type }}
+                </q-td>
+                <q-td key="status" :props="props">
+                  <q-badge v-if="props.row.status == 'Active'" color="green" class="q-mr-xs">
+                    Active
+                  </q-badge>
+                  <q-badge v-else-if="props.row.status == 'Pending'" color="yellow" class="q-mr-xs">
+                    Pending
+                  </q-badge>
+                  <q-badge v-else-if="props.row.status == 'Retired'" color="red" class="q-mr-xs">
+                    Retired
+                  </q-badge>
+                </q-td>
 
+                <q-td key="buttons" :props="props" class="q-gutter-x-sm">
+                  <q-btn v-if="props.row.status=='Active' || props.row.status=='Pending'" label="Assign Skills" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
 
+                </q-td>
+                
+              </q-tr>
+
+            </template>
+          </q-table>
             
 
 
@@ -825,9 +870,25 @@ export default {
       this.getJobTable()
       this.getSkillTable()
 
-    }
+    },
 
-    // need to make onEditSkillPopup and onEditSkill
+    async getCoursesTable(){
+      let courseData = await axios.get('http://127.0.0.1:5000/api/courses')
+      this.coursesEmpty = true
+      let currCourseData = []
+      if (courseData.data.length>0){
+        this.coursesEmpty = false
+      }
+
+      courseData.data.forEach(element => {        
+        currCourseData.push(element)
+      });
+
+      
+      this.courseData = currCourseData
+      console.log('courseData:',this.courseData)
+    },
+
   },
   data () {
     return {
@@ -860,6 +921,7 @@ export default {
       editSkillDescription:'',
       editSkillId:0,
       editSkillStatusOption:'',
+
 
       //visibility of empty div. on mounted if have records then set this programatically to false.
       jobsEmpty:false,
@@ -923,7 +985,7 @@ export default {
           sortable: true
         },
         { name: 'name', align: 'center', label: 'Skill Title', field: 'name', sortable: true },
-        { name: 'description', align: 'center', label: 'Skill Description', field: 'description', sortable: true },
+        { name: 'description', align: 'center', label: 'Skill Description', field: 'description', sortable: true ,style: "max-width:400px;white-space: normal;" },
         { name: 'status', align: 'center', label: 'Skill Status', field: 'status' },
         { name: 'buttons', align: 'center', field: 'buttons' },
         
@@ -958,6 +1020,53 @@ export default {
         
       ],
 
+      courseColumns: [
+        {
+          name: 'id',
+          required: true,
+          label: 'ID',
+          align: 'left',
+          field: 'id',
+          sortable: true
+        },
+        { name: 'name', align: 'center', label: 'Course Name', field: 'name', sortable: true },
+        { name: 'category', align: 'center', label: 'Course Category', field: 'category', sortable: true },
+        { name: 'type', align: 'center', label: 'Course Type', field: 'type', sortable: true },
+        { name: 'description', align: 'center', label: 'Course Description', field: 'description', sortable: true ,style: "max-width:400px;white-space: normal;" },
+        { name: 'status', align: 'center', label: 'Course Status', field: 'status' },
+        { name: 'buttons', align: 'center', field: 'buttons' },
+        
+      ],
+
+      courseData: [
+        {
+          id: 'JR001',
+          name: 'Senior Engineer',
+          description: 'A super pro developer',
+          // skills: ['HTML','CSS','Javascript'],
+          // buttons:''
+          
+        },
+        {
+          id: 'JR002',
+          name: 'Junior Engineer',
+          description: 'A noob developer',
+          // skills: ['HTML'],
+          // buttons:''
+          
+        },
+        {
+          id: 'JR003',
+          name: 'Marketing Director',
+          description: 'A marketing person',
+          // skills: ['Excel', ' Powerpoint'],
+          // buttons:''
+          
+        },
+      ],
+        
+        
+
 
       defaultOptions: {
         animationData: animationData.default,
@@ -974,23 +1083,13 @@ export default {
     if (localStorage.token == undefined || localStorage.token!='hr'){
       this.$router.push('/login')
     } 
-    // let roleData = await axios.get('http://127.0.0.1:5000/api/roles')
-    // console.log(roleData.data)
 
-    // this.jobsEmpty = true
 
-    // roleData.data.forEach(element => {
-    //   if (element.active == true){
-    //     this.jobsEmpty = false
-    //     return
-    //   }
-    // });
-
-    
-    // this.jobData = roleData.data
+  
 
     this.getJobTable()
     this.getSkillTable()
+    this.getCoursesTable()
       
 
   }
