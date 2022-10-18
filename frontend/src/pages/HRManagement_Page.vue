@@ -1026,7 +1026,7 @@ export default {
         // console.log(assignRes)
 
         // this.skillOptions = []
-        this.assignDialog = false
+        this.assignSkillToCourseDialog = false
         this.getJobTable()
         this.getSkillTable()
         this.getCoursesTable()
@@ -1106,30 +1106,30 @@ export default {
       ],
 
       jobData: [
-        {
-          id: 'JR001',
-          name: 'Senior Engineer',
-          description: 'A super pro developer',
-          // skills: ['HTML','CSS','Javascript'],
-          // buttons:''
+        // {
+        //   id: 'JR001',
+        //   name: 'Senior Engineer',
+        //   description: 'A super pro developer',
+        //   // skills: ['HTML','CSS','Javascript'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR002',
-          name: 'Junior Engineer',
-          description: 'A noob developer',
-          // skills: ['HTML'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR002',
+        //   name: 'Junior Engineer',
+        //   description: 'A noob developer',
+        //   // skills: ['HTML'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR003',
-          name: 'Marketing Director',
-          description: 'A marketing person',
-          // skills: ['Excel', ' Powerpoint'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR003',
+        //   name: 'Marketing Director',
+        //   description: 'A marketing person',
+        //   // skills: ['Excel', ' Powerpoint'],
+        //   // buttons:''
           
-        },
+        // },
         
         
       ],
@@ -1151,30 +1151,30 @@ export default {
       ],
 
       skillData: [
-        {
-          id: 'JR001',
-          name: 'Senior Engineer',
-          description: 'A super pro developer',
-          // skills: ['HTML','CSS','Javascript'],
-          // buttons:''
+        // {
+        //   id: 'JR001',
+        //   name: 'Senior Engineer',
+        //   description: 'A super pro developer',
+        //   // skills: ['HTML','CSS','Javascript'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR002',
-          name: 'Junior Engineer',
-          description: 'A noob developer',
-          // skills: ['HTML'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR002',
+        //   name: 'Junior Engineer',
+        //   description: 'A noob developer',
+        //   // skills: ['HTML'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR003',
-          name: 'Marketing Director',
-          description: 'A marketing person',
-          // skills: ['Excel', ' Powerpoint'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR003',
+        //   name: 'Marketing Director',
+        //   description: 'A marketing person',
+        //   // skills: ['Excel', ' Powerpoint'],
+        //   // buttons:''
           
-        },
+        // },
         
         
       ],
@@ -1199,30 +1199,30 @@ export default {
       ],
 
       courseData: [
-        {
-          id: 'JR001',
-          name: 'Senior Engineer',
-          description: 'A super pro developer',
-          // skills: ['HTML','CSS','Javascript'],
-          // buttons:''
+        // {
+        //   id: 'JR001',
+        //   name: 'Senior Engineer',
+        //   description: 'A super pro developer',
+        //   // skills: ['HTML','CSS','Javascript'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR002',
-          name: 'Junior Engineer',
-          description: 'A noob developer',
-          // skills: ['HTML'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR002',
+        //   name: 'Junior Engineer',
+        //   description: 'A noob developer',
+        //   // skills: ['HTML'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR003',
-          name: 'Marketing Director',
-          description: 'A marketing person',
-          // skills: ['Excel', ' Powerpoint'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR003',
+        //   name: 'Marketing Director',
+        //   description: 'A marketing person',
+        //   // skills: ['Excel', ' Powerpoint'],
+        //   // buttons:''
           
-        },
+        // },
       ],
         
         

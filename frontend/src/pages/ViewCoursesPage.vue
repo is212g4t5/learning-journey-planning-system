@@ -34,7 +34,7 @@
           <img src="~assets/courseImage.png" style="width:100%;border-top-left-radius:5px;border-top-right-radius:5px" alt="">
           <div class="q-px-md q-py-sm">
             <div class="q-mb-sm" style="font-size:20px;font-weight:700">{{course.name}}</div>
-            <div class="q-mb-sm" style="color:#676767;font-size:16px;font-weight:700">{{course.category}}</div>
+            <div class="q-mb-sm" style="color:#676767;font-size:16px;font-weight:700">{{course.category}} ({{course.id}})</div>
             <div class="" style="color:#737373; font-size:14px">{{course.description}}</div>
             <!-- buttons div -->
             <div class="flex items-center q-gutter-x-sm q-mt-md">
