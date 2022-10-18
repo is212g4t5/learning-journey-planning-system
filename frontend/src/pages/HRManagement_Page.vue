@@ -207,7 +207,7 @@
                 <q-input ref="editJobRoleDescription" type="textarea" outlined v-model="editJobRoleDescription" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Job Role Description" style="font-size:16px" />
 
 
-                <div class="font-size-16 q-mb-xs ">Skill Status</div>
+                <div class="font-size-16 q-mb-xs ">Job Status</div>
                 <q-select
                 class=""
                 outlined
@@ -971,6 +971,9 @@ export default {
     Lottie
   },
   async mounted(){
+    if (localStorage.token == undefined || localStorage.token!='hr'){
+      this.$router.push('/login')
+    } 
     // let roleData = await axios.get('http://127.0.0.1:5000/api/roles')
     // console.log(roleData.data)
 

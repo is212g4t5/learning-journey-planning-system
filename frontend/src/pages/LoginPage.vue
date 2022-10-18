@@ -118,12 +118,17 @@ export default {
     },
     handleRedirect(){
       if (this.user == 'Human Resource'){
+
+        localStorage.setItem("token", 'hr')
+
         this.$store.state.user = 'hr'
         this.$router.push('/learning_journey/hr')
       }else if (this.user == 'Manager'){
+        localStorage.setItem("token", 'manager')
         this.$store.state.user = 'manager'
         this.$router.push('/learning_journey/manager')
       }else if (this.user == 'Other User'){
+        localStorage.setItem("token", 'user')
         this.$store.state.user = 'user'
         this.$router.push('/learning_journey/user')
       }
@@ -137,6 +142,9 @@ export default {
     // }else if (this.user == 'Other User'){
     //   this.$store.state.user = 'user'
     // }
+
+
+
     
   },  
   data () {

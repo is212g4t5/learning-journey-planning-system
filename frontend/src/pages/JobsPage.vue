@@ -78,6 +78,12 @@ export default {
     Lottie
   },
   async mounted() {
+    console.log('job page user',localStorage.token == undefined)
+    if (localStorage.token == undefined || localStorage.token == ''){
+      this.$router.push('/login')
+    }
+
+
     let roleData = await axios.get("http://127.0.0.1:5000/api/roles");
     this.jobsEmpty = true;
     let currJobData = [];
