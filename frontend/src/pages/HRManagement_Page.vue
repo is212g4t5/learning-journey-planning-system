@@ -130,10 +130,13 @@
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditSkillPopup(props.row)"></q-btn>
-                    <q-btn label="Remove" color="red" outline no-caps @click="deleteSkill(props.row)"></q-btn>
+
+                    <q-btn v-if="props.row.active==true" label="Remove" color="red" outline no-caps @click="deleteSkill(props.row)"></q-btn>
+
                 </q-td>
                 
               </q-tr>
+
             </template>
           </q-table>
 
@@ -380,7 +383,7 @@ export default {
             description:this.jobRoleDescription,
             active:true 
           }).catch(err=>{
-            console.log(err)
+            console.log('STATUS CODE',err.stats)
             this.$q.notify({
               color: 'negative',
               icon:'error',
@@ -469,6 +472,7 @@ export default {
           jobStatus = false
         }
 
+        let editPass = true
           let updateRes = await axios.put(`http://127.0.0.1:5000/api/roles/${this.editRowId}`,{
             name:this.editJobRoleName,
             description:this.editJobRoleDescription,
@@ -480,6 +484,7 @@ export default {
               icon:'error',
               message: 'Failed to update row in database'
             })
+            editPass = false
             return
           })
 
@@ -489,12 +494,16 @@ export default {
           
           this.editJobDialog = false
           
-          this.$q.notify({
-            icon: 'done',
-            color: 'positive',
-            icon:'done',
-            message: 'Edited role'
-          })
+
+          if (editPass == true){
+            this.$q.notify({
+              icon: 'done',
+              color: 'positive',
+              icon:'done',
+              message: 'Edited role'
+            })
+          }
+          
         }
 
         // reset every enter
@@ -744,16 +753,26 @@ export default {
         }else{
           jobStatus = false
         }
+
+
+          let editSkillPass = true
+
           let updateRes = await axios.put(`http://127.0.0.1:5000/api/skills/${this.editSkillId}`,{
             name:this.editSkillName,
             description:this.editSkillDescription,
             active:jobStatus 
           }).catch(err=>{
-            console.log(err)
+            console.log('STATUS CODE',err.response.status)
+            editSkillPass = false
+
+            let errMessage = 'Failed to update skill in database'
+            if (err.response.status == 400){
+              errMessage = 'Skill name exists!'
+            }
             this.$q.notify({
               color: 'negative',
               icon:'error',
-              message: 'Failed to update row in database'
+              message: errMessage
             })
             return
           })
@@ -764,12 +783,15 @@ export default {
           
           this.editSkillDialog = false
           
-          this.$q.notify({
-            icon: 'done',
-            color: 'positive',
-            icon:'done',
-            message: 'Edited role'
-          })
+          if (editSkillPass == true){
+            this.$q.notify({
+              icon: 'done',
+              color: 'positive',
+              icon:'done',
+              message: 'Edited Skill'
+            })
+          }
+          
         }
 
         // reset every enter
