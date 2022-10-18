@@ -149,7 +149,7 @@
             <div class="text-center" v-if="coursesEmpty">
               <Lottie :options="defaultOptions"  style="width:20vw" />
               <div class="font-700 font-size-28">No Courses Found!</div>
-              <div class="font-500 font-size-14 myTextGrey">There are no roles in the system. Start adding <br> new roles to view them.</div>
+              <div class="font-500 font-size-14 myTextGrey">There are no courses in the system.</div>
             </div>
 
 
