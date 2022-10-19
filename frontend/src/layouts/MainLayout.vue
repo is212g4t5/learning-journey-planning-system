@@ -105,7 +105,8 @@
       <q-item
         clickable
         tag="a"
-        :to="'/login'"
+        @click="logout()"
+       
       >
         <q-item-section
           avatar
@@ -184,6 +185,12 @@ const linksData = [
 ]
 
 export default {
+  methods: {
+    logout(){
+      localStorage.setItem("token", '')
+      this.$router.push('/login')
+    }
+  },
   name: 'MainLayout',
   components: {
     EssentialLink
@@ -197,8 +204,10 @@ export default {
     }
   },
   mounted(){
-
-  this.$router.push('/login')
+    if (localStorage.token == undefined){
+      this.$router.push('/login')
+    } 
+  
   }
 }
 </script>

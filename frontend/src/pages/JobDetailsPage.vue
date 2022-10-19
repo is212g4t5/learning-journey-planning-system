@@ -39,11 +39,12 @@
           </div>
 
           <div class="text-grey-7" style="font-size:24px">Skills Required:</div>
-          <div v-if="noSkills" class="font-size:24px">Hey there! There are no skills required for <strong>{{jobData.name}}</strong></div>
+          <div v-if="noSkills == true" class="font-size:24px">Hey there! There are no skills required for <strong>{{jobData.name}}</strong></div>
+          
 
           <div class="row">
             <div v-for="skill in jobData.skills" :key="skill.name" class="q-pa-sm" >
-              <q-btn v-if="skill.active==true">{{skill.name}}</q-btn>
+              <q-btn v-if="skill.active==true" @click="redirectToCoursePage(skill)">{{skill.name}}</q-btn>
             </div>
             
 
@@ -59,6 +60,12 @@
 <script>
 import axios from "axios";
 export default {
+  methods: {
+    redirectToCoursePage(skill){
+      console.log(skill)
+      this.$router.push(`/courses/${skill.id}`)
+    }
+  },
   data() {
     return {
       jobData: {},
@@ -77,15 +84,19 @@ export default {
     });
 
     this.jobData = currJobData;
+
+    console.log(this.jobData)
     
-    this.jobData.forEach(element => {
-      element.skills.forEach(skill => {
+    this.jobData.skills.forEach(skill => {
         if (skill.active == true){
           this.noSkills = false
+
+          console.log(element)
+
           return
         }
       });
-    });
+   
 
     console.log("job data:", this.jobData);
   },

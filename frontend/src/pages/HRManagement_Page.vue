@@ -81,8 +81,8 @@
 
                 <q-td key="buttons" :props="props" class="q-gutter-x-sm">
                     <q-btn label="Edit" color="orange" outline no-caps @click="openEditJobPopup(props.row)"></q-btn>
-                    <q-btn label="Assign Skills" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
-                    <q-btn label="Remove" color="red" outline no-caps @click="deleteJob(props.row)"></q-btn>
+                    <q-btn v-if="props.row.active==true" label="Assign Skills" color="green" outline no-caps @click="openAssignPopup(props.row)"></q-btn>
+                    <q-btn v-if="props.row.active==true" label="Remove" color="red" outline no-caps @click="deleteJob(props.row)"></q-btn>
                 </q-td>
                 
               </q-tr>
@@ -96,7 +96,7 @@
             <div class="text-center" v-if="skillsEmpty">
               <Lottie :options="defaultOptions"  style="width:20vw" />
               <div class="font-700 font-size-28">No Skills Found!</div>
-              <div class="font-500 font-size-14 myTextGrey">There are no roles in the system. Start adding <br> new roles to view them.</div>
+              <div class="font-500 font-size-14 myTextGrey">There are no skills in the system. Start adding <br> new skills to view them.</div>
             </div>
 
 
@@ -144,15 +144,66 @@
 
 
           <!-- courses panel -->
-          <q-tab-panel name="View Courses" v-show="coursesEmpty">
+          <q-tab-panel name="View Courses">
             
             <div class="text-center" v-if="coursesEmpty">
               <Lottie :options="defaultOptions"  style="width:20vw" />
               <div class="font-700 font-size-28">No Courses Found!</div>
-              <div class="font-500 font-size-14 myTextGrey">There are no roles in the system. Start adding <br> new roles to view them.</div>
+              <div class="font-500 font-size-14 myTextGrey">There are no courses in the system.</div>
             </div>
+            
+            <q-table
+            v-else
+            title="Courses"
+            :data="courseData"
+            :columns="courseColumns"
+            row-key="name"
+            :rows-per-page-options="[10]"
+          >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="id" :props="props">
+                  {{ props.row.id }}
+                </q-td>
+                <q-td key="name" :props="props">
+                    {{ props.row.name }}
+                </q-td>
+                <q-td key="description" :props="props">
+                    {{ props.row.description }}
+                </q-td>
+                <q-td key="category" :props="props">
+                    {{ props.row.category }}
+                </q-td>
+                <q-td key="type" :props="props">
+                    {{ props.row.type }}
+                </q-td>
+               
+                 <q-td key="skills" :props="props">
+                  <q-badge v-for="(skill,index) in props.row.skills" :key="index" v-if="skill.active==true" color="orange" class="q-mr-xs">
+                    {{skill.name}}
+                  </q-badge>
+                </q-td>
+                <q-td key="status" :props="props">
+                  <q-badge v-if="props.row.status == 'Active'" color="green" class="q-mr-xs">
+                    Active
+                  </q-badge>
+                  <q-badge v-else-if="props.row.status == 'Pending'" color="yellow-9" class="q-mr-xs">
+                    Pending
+                  </q-badge>
+                  <q-badge v-else-if="props.row.status == 'Retired'" color="red" class="q-mr-xs">
+                    Retired
+                  </q-badge>
+                </q-td>
 
+                <q-td key="buttons" :props="props" class="q-gutter-x-sm">
+                  <q-btn v-if="props.row.status=='Active' || props.row.status=='Pending'" label="Assign Skills" color="green" outline no-caps @click="openAssignSkillToCoursePopup(props.row)"></q-btn>
 
+                </q-td>
+                
+              </q-tr>
+
+            </template>
+          </q-table>
             
 
 
@@ -207,7 +258,7 @@
                 <q-input ref="editJobRoleDescription" type="textarea" outlined v-model="editJobRoleDescription" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Job Role Description" style="font-size:16px" />
 
 
-                <div class="font-size-16 q-mb-xs ">Skill Status</div>
+                <div class="font-size-16 q-mb-xs ">Job Status</div>
                 <q-select
                 class=""
                 outlined
@@ -311,12 +362,12 @@
             <form @submit.prevent.stop="onEditSkill" >
               <div class="q-mx-md">
                 <div class="font-size-16 q-mb-xs">Skill Name</div>
-                <q-input ref="editSkillName" outlined v-model="editSkillName" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Name" style="font-size:16px" />
+                <q-input ref="editSkillName" outlined v-model="editSkillName" :disable="editSkillStatusOption=='Inactive'" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Name" style="font-size:16px" />
               </div>
 
               <div class="q-mx-md ">
                 <div class="font-size-16 q-mb-xs">Skill Description</div>
-                <q-input ref="editSkillDescription" type="textarea" outlined v-model="editSkillDescription" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Description" style="font-size:16px" />
+                <q-input ref="editSkillDescription" type="textarea" outlined v-model="editSkillDescription" :disable="editSkillStatusOption=='Inactive'" :rules="[val => !!val || 'Field is required']" class="" placeholder="Enter a Skill Description" style="font-size:16px" />
                 
                   <div class="font-size-16 q-mb-xs q-mt-md">Skill Status</div>
                 <q-select
@@ -334,6 +385,49 @@
             <q-card-actions align="right" class="q-mt-sm">
               <q-btn flat label="Cancel" color="primary" v-close-popup />
               <q-btn  label="Edit" color="primary" type="submit" />
+            </q-card-actions>
+
+            </form>
+          </q-card>
+        </q-dialog>
+
+         <!-- assign skill to course dialog -->
+         <q-dialog v-model="assignSkillToCourseDialog">
+          <q-card class="q-pa-md" style="width:50vw">
+            <div class="text-center font-700" style="color:#525252; font-size:28px">Assign Skill To Course</div>
+            <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+            <form @submit.prevent.stop="onAssignSkillToCourse" >
+              <div class="q-mx-md">
+                <div class="font-size-16 q-mb-xs">Course Name</div>
+                <q-input ref="assignSkillToCourse" outlined v-model="assignSkillToCourse" :rules="[val => !!val || 'Field is required']" class=""  style="font-size:16px" disable />
+              </div>
+
+              <div class="q-mx-md q-mt-md">
+                <div class="font-size-16 q-mb-xs">Course Description</div>
+                <q-input ref="assignSkillToCourseDescription" type="textarea" outlined v-model="assignSkillToCourseDescription" :rules="[val => !!val || 'Field is required']" class=""  style="font-size:16px" disable />
+              </div>
+
+              <div class="q-mx-md ">
+                <div class="font-size-16 q-mb-xs">Select Skills</div>
+                <q-select
+                
+                autofocus
+                filled
+                v-model="skillOptions"
+                multiple
+                :options="skillOptionsArray"
+                :rules="[val => !!val || 'Field is required']"
+                style="font-size:16px"
+              />
+              </div>
+             
+           
+            
+
+            <q-card-actions align="right" class="q-mt-sm">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn  label="Assign" color="primary" type="submit" />
             </q-card-actions>
 
             </form>
@@ -394,6 +488,8 @@ export default {
 
           // refresh table again
           this.getJobTable()
+    this.getSkillTable()
+    this.getCoursesTable()
           
           this.addJobDialog = false
           
@@ -490,6 +586,8 @@ export default {
 
           // refresh table again
           this.getJobTable()
+    this.getSkillTable()
+    this.getCoursesTable()
           
           
           this.editJobDialog = false
@@ -512,8 +610,6 @@ export default {
 
     
     },
-
-    
     openAssignPopup(row){
       console.log(row)
 
@@ -596,7 +692,8 @@ export default {
         // this.skillOptions = []
         this.assignDialog = false
         this.getJobTable()
-          
+        this.getSkillTable()
+        this.getCoursesTable()
         this.$q.notify({
           icon: 'done',
           color: 'positive',
@@ -630,7 +727,8 @@ export default {
 
       // refresh table again
       this.getJobTable()
-
+    this.getSkillTable()
+    this.getCoursesTable()
 
     },
 
@@ -696,7 +794,9 @@ export default {
           })
 
           // refresh table again
-          this.getSkillTable()
+          this.getJobTable()
+    this.getSkillTable()
+    this.getCoursesTable()
 
           
           this.addSkillDialog = false
@@ -780,8 +880,9 @@ export default {
           })
 
           // refresh table again
-          this.getSkillTable()
           this.getJobTable()
+        this.getSkillTable()
+        this.getCoursesTable()
           
           this.editSkillDialog = false
           
@@ -825,9 +926,123 @@ export default {
       this.getJobTable()
       this.getSkillTable()
 
-    }
+    },
 
-    // need to make onEditSkillPopup and onEditSkill
+    async getCoursesTable(){
+      let courseData = await axios.get('http://127.0.0.1:5000/api/courses/skills')
+      this.coursesEmpty = true
+      let currCourseData = []
+      if (courseData.data.length>0){
+        this.coursesEmpty = false
+      }
+
+      courseData.data.forEach(element => {        
+        currCourseData.push(element)
+      });
+
+      
+      this.courseData = currCourseData
+      console.log('courseData:',this.courseData)
+    },
+
+    openAssignSkillToCoursePopup(row){
+      console.log(row)
+
+      //open dialog, store all the disabled fields
+      this.assignSkillToCourseDialog = true
+      this.assignSkillToCourse = row.name
+      this.assignSkillToCourseDescription = row.description
+      this.assignRowId = row.id
+
+      console.log('ASSIGN ROLE ID', this.assignRowId)
+
+      //store all skills as options 
+      let skillsArray = []
+      this.skillData.forEach(element => {
+        if (element.active == true){
+          skillsArray.push(element.name)
+        }
+        
+      });
+      this.skillOptionsArray = skillsArray
+
+      console.log('SKILLS ARRAY:',skillsArray)
+      console.log('COURSE DATA:',this.courseData)
+
+      let skillsOptionsSelected = []
+      this.courseData.forEach(element => {
+        if (element.id == row.id){
+          console.log('ELEMENT SKILLS OPTIONS SELECTED', element)
+          element.skills.forEach(indivSkill => {
+            if (indivSkill.active == true){
+              skillsOptionsSelected.push(indivSkill)
+              // console.log(indivSkill)
+            }
+          });
+          // skillsOptionsSelected = element.skills
+          return
+        }
+      });
+
+      console.log('skill options selected',skillsOptionsSelected)
+
+      let skillOptionsSelectedNames = []
+      skillsOptionsSelected.forEach(element => {
+        console.log(element)
+        skillOptionsSelectedNames.push(element.name)
+      }); 
+
+      console.log(skillOptionsSelectedNames)
+
+      this.skillOptions = skillOptionsSelectedNames
+
+
+    },
+    async onAssignSkillToCourse(){
+      if (this.skillOptions.length == 0){
+        this.$q.notify({
+          color: 'negative',
+          icon:'error',
+          message: 'Must select at least 1 skill!'
+        })
+      }else{
+        // have options, get the array of option IDs from skillOptions names
+        console.log(this.skillOptions)
+
+        let skillOptionIds = []
+        this.skillData.forEach(element => {
+          if (this.skillOptions.includes(element.name) ){
+            skillOptionIds.push(element.id)
+          }
+        });
+
+
+        console.log('course id',this.assignRowId,'skill option ids:',skillOptionIds)
+
+        let assignRes = await axios.put(`http://127.0.0.1:5000/api/courses/${this.assignRowId}/skills`,{
+          skill_ids:skillOptionIds
+        })
+        
+        // console.log(assignRes)
+
+        // this.skillOptions = []
+        this.assignSkillToCourseDialog = false
+        this.getJobTable()
+        this.getSkillTable()
+        this.getCoursesTable()
+          
+        this.$q.notify({
+          icon: 'done',
+          color: 'positive',
+          icon:'done',
+          message: 'Assigned skills to course'
+        })
+
+
+
+      }
+    },
+
   },
   data () {
     return {
@@ -850,6 +1065,11 @@ export default {
       skillOptionsArray:[], //for the skill options
       skillOptions:'skill1', //v-model
 
+      //for assign skill to course
+      assignSkillToCourseDialog:false,
+      assignSkillToCourse:'',
+      assignSkillToCourseDescription:'',
+
 
       addSkillDialog:false,
       skillName:'',
@@ -860,6 +1080,7 @@ export default {
       editSkillDescription:'',
       editSkillId:0,
       editSkillStatusOption:'',
+
 
       //visibility of empty div. on mounted if have records then set this programatically to false.
       jobsEmpty:false,
@@ -885,30 +1106,30 @@ export default {
       ],
 
       jobData: [
-        {
-          id: 'JR001',
-          name: 'Senior Engineer',
-          description: 'A super pro developer',
-          // skills: ['HTML','CSS','Javascript'],
-          // buttons:''
+        // {
+        //   id: 'JR001',
+        //   name: 'Senior Engineer',
+        //   description: 'A super pro developer',
+        //   // skills: ['HTML','CSS','Javascript'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR002',
-          name: 'Junior Engineer',
-          description: 'A noob developer',
-          // skills: ['HTML'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR002',
+        //   name: 'Junior Engineer',
+        //   description: 'A noob developer',
+        //   // skills: ['HTML'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR003',
-          name: 'Marketing Director',
-          description: 'A marketing person',
-          // skills: ['Excel', ' Powerpoint'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR003',
+        //   name: 'Marketing Director',
+        //   description: 'A marketing person',
+        //   // skills: ['Excel', ' Powerpoint'],
+        //   // buttons:''
           
-        },
+        // },
         
         
       ],
@@ -923,40 +1144,88 @@ export default {
           sortable: true
         },
         { name: 'name', align: 'center', label: 'Skill Title', field: 'name', sortable: true },
-        { name: 'description', align: 'center', label: 'Skill Description', field: 'description', sortable: true },
+        { name: 'description', align: 'center', label: 'Skill Description', field: 'description', sortable: true ,style: "max-width:400px;white-space: normal;" },
         { name: 'status', align: 'center', label: 'Skill Status', field: 'status' },
         { name: 'buttons', align: 'center', field: 'buttons' },
         
       ],
 
       skillData: [
-        {
-          id: 'JR001',
-          name: 'Senior Engineer',
-          description: 'A super pro developer',
-          // skills: ['HTML','CSS','Javascript'],
-          // buttons:''
+        // {
+        //   id: 'JR001',
+        //   name: 'Senior Engineer',
+        //   description: 'A super pro developer',
+        //   // skills: ['HTML','CSS','Javascript'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR002',
-          name: 'Junior Engineer',
-          description: 'A noob developer',
-          // skills: ['HTML'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR002',
+        //   name: 'Junior Engineer',
+        //   description: 'A noob developer',
+        //   // skills: ['HTML'],
+        //   // buttons:''
           
-        },
-        {
-          id: 'JR003',
-          name: 'Marketing Director',
-          description: 'A marketing person',
-          // skills: ['Excel', ' Powerpoint'],
-          // buttons:''
+        // },
+        // {
+        //   id: 'JR003',
+        //   name: 'Marketing Director',
+        //   description: 'A marketing person',
+        //   // skills: ['Excel', ' Powerpoint'],
+        //   // buttons:''
           
-        },
+        // },
         
         
       ],
+
+      courseColumns: [
+        {
+          name: 'id',
+          required: true,
+          label: 'ID',
+          align: 'left',
+          field: 'id',
+          sortable: true
+        },
+        { name: 'name', align: 'center', label: 'Course Name', field: 'name', sortable: true },
+        { name: 'category', align: 'center', label: 'Course Category', field: 'category', sortable: true },
+        { name: 'type', align: 'center', label: 'Course Type', field: 'type', sortable: true },
+        { name: 'description', align: 'center', label: 'Course Description', field: 'description', sortable: true ,style: "max-width:400px;white-space: normal;" },
+        { name: 'skills', align: 'center', label: 'Course Skills', field: 'skills' },
+        { name: 'status', align: 'center', label: 'Course Status', field: 'status' },
+        { name: 'buttons', align: 'center', field: 'buttons' },
+        
+      ],
+
+      courseData: [
+        // {
+        //   id: 'JR001',
+        //   name: 'Senior Engineer',
+        //   description: 'A super pro developer',
+        //   // skills: ['HTML','CSS','Javascript'],
+        //   // buttons:''
+          
+        // },
+        // {
+        //   id: 'JR002',
+        //   name: 'Junior Engineer',
+        //   description: 'A noob developer',
+        //   // skills: ['HTML'],
+        //   // buttons:''
+          
+        // },
+        // {
+        //   id: 'JR003',
+        //   name: 'Marketing Director',
+        //   description: 'A marketing person',
+        //   // skills: ['Excel', ' Powerpoint'],
+        //   // buttons:''
+          
+        // },
+      ],
+        
+        
 
 
       defaultOptions: {
@@ -971,23 +1240,16 @@ export default {
     Lottie
   },
   async mounted(){
-    // let roleData = await axios.get('http://127.0.0.1:5000/api/roles')
-    // console.log(roleData.data)
+    if (localStorage.token == undefined || localStorage.token!='hr'){
+      this.$router.push('/login')
+    } 
 
-    // this.jobsEmpty = true
 
-    // roleData.data.forEach(element => {
-    //   if (element.active == true){
-    //     this.jobsEmpty = false
-    //     return
-    //   }
-    // });
-
-    
-    // this.jobData = roleData.data
+  
 
     this.getJobTable()
     this.getSkillTable()
+    this.getCoursesTable()
       
 
   }

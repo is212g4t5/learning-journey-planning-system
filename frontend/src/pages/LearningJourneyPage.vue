@@ -13,8 +13,12 @@ export default {
   methods: {
   },
   mounted(){
+    console.log('vuex user',this.$store.state.user)
+    console.log('storage token',localStorage.token)
+    if (localStorage.token == undefined){
+      this.$router.push('/login')
+    }
     
-    console.log('params route:',this.$router.currentRoute.params.role)
   }
 }
 </script>
