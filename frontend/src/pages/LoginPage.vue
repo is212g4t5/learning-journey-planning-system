@@ -89,8 +89,7 @@
          <div class="" style="font-size:18px">Staff email</div>
          <q-input v-model="email" outlined placeholder="Enter Staff Email" />
 
-         <div class="q-mt-md" style="font-size:18px">Password</div>
-         <q-input v-model="password" type="password" outlined placeholder="Enter Staff Email" class="q-mb-md" />
+
         </q-card-section>
 
         <q-card-actions >
@@ -117,6 +116,9 @@ export default {
       this.user = user
     },
     handleRedirect(){
+      //add juan api after this
+
+
       if (this.user == 'Human Resource'){
 
         localStorage.setItem("token", 'hr')
