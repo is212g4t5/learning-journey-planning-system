@@ -63,7 +63,7 @@ export default {
   methods: {
     redirectToCoursePage(skill){
       console.log(skill)
-      this.$router.push(`/courses/${skill.id}`)
+      this.$router.push(`/courses/${this.$route.params.id}/${skill.id}`)
     }
   },
   data() {
