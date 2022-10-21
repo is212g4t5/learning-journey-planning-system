@@ -29,4 +29,4 @@ class TestStaff:
                 assert res["department"] == staff.department
                 assert res["email"] == staff.email
                 assert res["user_type_id"] == staff.user_type_id
-               
+                

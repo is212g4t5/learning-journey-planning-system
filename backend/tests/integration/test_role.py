@@ -23,7 +23,7 @@ class TestRole:
     #test get role by id
     def test_get_role_by_id(self,client):
         response = client.get(self.url+"1")
-        assert response.status_code==200,"response is "+str(response.status_code)
+        assert response.status_code==200
         
         res = response.json
 
@@ -33,6 +33,11 @@ class TestRole:
             assert res["name"] == role.name
             assert res["description"] == role.description
             assert res["active"] == role.active
+
+    #test get role by invalid id
+    def test_get_role_by_invalid_id(self,client):
+        response = client.get(self.url+"100")
+        assert response.status_code==404
     
     
     #test update role by id
@@ -43,7 +48,7 @@ class TestRole:
             "active": False
             } 
         response = client.put(self.url+"1",json=put_data)
-        assert response.status_code==200,"response is "+str(response.status_code)
+        assert response.status_code==200
         
         with self.app.app_context():
             role = Role.query.get(1)
@@ -51,14 +56,29 @@ class TestRole:
             assert role.description == put_data["description"]
             assert role.active == put_data["active"]
 
+    #test update role by invalid id
+    def test_update_role_by_invalid_id(self,client):
+        put_data={
+            "name": "TestUpdatedRole1",
+            "description": "TestUpdatedDesc",
+            "active": False
+            } 
+        response = client.put(self.url+"100",json=put_data)
+        assert response.status_code==404
+
     #test delete role by id
     def test_delete_role_by_id(self,client):
         response = client.delete(self.url+"1")
-        assert response.status_code==200,"response is "+str(response.status_code)
+        assert response.status_code==200
         
         with self.app.app_context():
             role = Role.query.get(1)
             assert role.active == False
+
+    #test delete role by invalid id
+    def test_delete_role_by_invalid_id(self,client):
+        response = client.delete(self.url+"100")
+        assert response.status_code==404
 
     #test assign skills to role
     def test_assign_skills_to_role(self,client, create_skills):
@@ -67,13 +87,29 @@ class TestRole:
             "skill_ids": [1,2,3]
             } 
         response = client.put(self.url+"1/skills",json=put_data)
-        assert response.status_code==200,"response is "+str(response.status_code)
+        assert response.status_code==200
         
         with self.app.app_context():
             role = Role.query.get(1)
             assert len(role.skills) == len(put_data["skill_ids"])
             for skill in role.skills:
                 assert skill.id in put_data["skill_ids"]
+    
+    #test assign skills to role with invalid role id
+    def test_assign_skills_to_role_with_invalid_role_id(self,client, create_skills):
+            put_data={
+                "skill_ids": [1,2,3]
+                } 
+            response = client.put(self.url+"100/skills",json=put_data)
+            assert response.status_code==404
+
+    #test assign skills to role with invalid skill id
+    def test_assign_skills_to_role_with_invalid_skill_id(self,client, create_skills):
+            put_data={
+                "skill_ids": [1,2,100]
+                } 
+            response = client.put(self.url+"1/skills",json=put_data)
+            assert response.status_code==404
 
     #test get role with skills
     def test_get_role_with_skills(self,client, create_skills):
@@ -92,10 +128,20 @@ class TestRole:
             assert response.status_code==200,"response is "+str(response.status_code)
             
             res = response.json
-            assert res["id"] == 1
+            assert res["id"] == role1.id
             assert res["name"] == role1.name
             assert res["description"] == role1.description
             assert res["active"] == role1.active
             assert len(res["skills"]) == len(role1.skills), res
             for skill in res["skills"]:
                 assert skill["id"] in [skill.id for skill in role1.skills]
+                assert skill["name"] in [skill.name for skill in role1.skills]
+                assert skill["description"] in [skill.description for skill in role1.skills]
+                assert skill["active"] in [skill.active for skill in role1.skills]
+
+    #test get role with skills with invalid role id
+    def test_get_role_with_skills_with_invalid_role_id(self,client, create_skills):
+        response = client.get(self.url+"100/skills")
+        assert response.status_code==404
+
+        
