@@ -23,7 +23,7 @@ learning_journey_api = Blueprint('learning_journey_api', __name__)
 @learning_journey_api.route('/', methods=['GET'])
 def get_learning_journeys():
     all_learning_journeys = LearningJourney.query.all()
-    return LearningJourneySchema.jsonify(all_learning_journeys)
+    return learning_journeys_schema.jsonify(all_learning_journeys)
 
 #Get Single Learning Journey
 @learning_journey_api.route('/<id>', methods=['GET'])
