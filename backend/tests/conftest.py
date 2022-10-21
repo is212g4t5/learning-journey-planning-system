@@ -4,10 +4,12 @@ import pytest
 import os
 
 import subprocess
+from models.UserTypeModel import UserType
 from request_handler import create_app
 from models.shared_model import db
 from models.SkillModel import Skill
 from models.RoleModel import Role
+from models.StaffModel import Staff
 @pytest.fixture( scope="session")
 def app():
     app=create_app()  
@@ -35,7 +37,7 @@ def db_setup(app):
     yield db
 
 
-#Creade data for testing
+#Create data for testing
 
 #create a fixture for adding skills to db
 @pytest.fixture( scope="function")
@@ -52,7 +54,7 @@ def create_skills(app):
     
     return skill1,skill2,skill3
 
-#creaet a fixture for adding roles to db
+#create a fixture for adding roles to db
 @pytest.fixture( scope="function")
 def create_roles(app):
     role1 = Role(name="TestRole1",description="TestDesc",active=True)
@@ -66,6 +68,36 @@ def create_roles(app):
         db.session.commit()
     
     return role1,role2,role3
+
+#create a fixture for adding usertype to db
+@pytest.fixture( scope="function")
+def create_usertype(app):
+    usertype1 = UserType(type="TestType1")
+    usertype2 = UserType(type="TestType2")
+    usertype3 = UserType(type="TestType3")
+
+    with app.app_context():
+        db.session.add(usertype1)
+        db.session.add(usertype2)
+        db.session.add(usertype3)
+        db.session.commit()
+    
+    return usertype1,usertype2,usertype3
+
+#create a fixture for adding staff to db
+@pytest.fixture( scope="function")
+def create_staff(app,create_usertype):
+    staff1 = Staff(first_name="TestFirstName1",last_name="TestLastName1", department="TestDepartment1",email="TestEmail1",user_type_id=1)
+    staff2 = Staff(first_name="TestFirstName2",last_name="TestLastName2", department="TestDepartment2",email="TestEmail2",user_type_id=1)
+    staff3 = Staff(first_name="TestFirstName3",last_name="TestLastName3", department="TestDepartment3",email="TestEmail3",user_type_id=1)
+
+    with app.app_context():
+        db.session.add(staff1)
+        db.session.add(staff2)
+        db.session.add(staff3)
+        db.session.commit()
+    
+    return staff1,staff2,staff3
 
 @pytest.fixture(scope='function')
 def test_post_client():
