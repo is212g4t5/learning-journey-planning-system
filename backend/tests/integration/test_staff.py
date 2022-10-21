@@ -18,7 +18,7 @@ class TestStaff:
         def test_staff_login(self,client):
             post_data={"email": "TestEmail1"}
             response = client.post(self.url+"login",json=post_data)
-            assert response.status_code==200,"response is "+str(response.status_code)
+            assert response.status_code==200
 
             res = response.json
             with self.app.app_context():
@@ -29,4 +29,9 @@ class TestStaff:
                 assert res["department"] == staff.department
                 assert res["email"] == staff.email
                 assert res["user_type_id"] == staff.user_type_id
-                
+
+        #test staff login with invalid email
+        def test_staff_login_with_invalid_email(self,client):
+            post_data={"email": "InvalidEmail"}
+            response = client.post(self.url+"login",json=post_data)
+            assert response.status_code==401
