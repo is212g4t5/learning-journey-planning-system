@@ -31,9 +31,7 @@ def get_learning_journeys():
 @learning_journey_api.route('/<id>', methods=['GET'])
 def get_learning_journey(id):
     learning_journey = LearningJourney.query.get(id)
-    # if not learning_journey:
-    #     return jsonify({"message": "Learning Journey not found"}), 404
-    return role_schema.jsonify(learning_journey)
+    return learning_journey_schema.jsonify(learning_journey)
 
 #Create Learning Journey
 @learning_journey_api.route('/create', methods=['POST'])
@@ -48,7 +46,7 @@ def create_learning_journey():
     db.session.add(new_learning_journey)
     try:
         db.session.commit()
-        return learning_journey_schema.jsonify(new_learning_journey),201
+        return lj_with_courses_schema.jsonify(new_learning_journey),201
     except Exception as e:
         return jsonify({"message":"unable to commit to database"+str(e)
         }),500
@@ -58,7 +56,7 @@ def create_learning_journey():
 def update_course_for_lj(id):
     lj = LearningJourney.query.get(id)
     print(lj)
-    course_ids = request.json['course_ids']
+    course_ids = request.json['course_id']
     lj.courses = []
     for course_id in course_ids:
         course = Course.query.get(course_id)
