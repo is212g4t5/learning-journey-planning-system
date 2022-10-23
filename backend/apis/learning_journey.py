@@ -1,21 +1,18 @@
+from models.CourseModel import Course
 from flask import Blueprint, jsonify, request
 from models.shared_model import db
 from models.LearningJourneyModel import LearningJourney
-from models.RoleModel import Role
-from models.SkillModel import Skill
-from models.CourseModel import Course
-
 from schemas.LearningJourneySchema import LearningJourneySchema, LearningJourneyWithCoursesSchema
-from schemas.RoleSchema import RoleSchema
+from models.RoleModel import Role
+from models.StaffModel import Staff
+from schemas.RoleSchema import RoleSchema, RoleWithSkillsSchema
 from schemas.StaffSchema import StaffSchema
 from schemas.CourseSchema import CourseSchema
 
 learning_journey_schema = LearningJourneySchema()
 learning_journeys_schema = LearningJourneySchema(many=True)
 
-learning_journey_with_courses_schema = LearningJourneyWithCoursesSchema
-learning_journeys_with_courses_schema = LearningJourneyWithCoursesSchema(many=True)
-
+lj_with_courses_schema = LearningJourneyWithCoursesSchema()
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)
 
@@ -39,34 +36,39 @@ def get_learning_journey(id):
     return role_schema.jsonify(learning_journey)
 
 #Create Learning Journey
-@learning_journey_api.route('/create', methods=['PUT'])
+@learning_journey_api.route('/create', methods=['POST'])
 def create_learning_journey():
     name = request.json['name']
     staff_id = request.json['staff_id']
     role_id = request.json['role_id']
-
-    new_learning_journey = LearningJourney(name, staff_id, role_id)
-
+    course_id = request.json['course_id']
+    course = Course.query.get(course_id)
+        
+    new_learning_journey = LearningJourney(name, staff_id, role_id, [course])
     db.session.add(new_learning_journey)
-    db.session.commit()
-
-    return learning_journey_schema.jsonify(new_learning_journey),201
-
-#Add Course to Learning Journey
-@learning_journey_api.route('/<id>/add', methods=['PUT'])
-def add_course_to_learning_journey(id):
-    learning_journey = LearningJourney.query.get(id)
-    course_ids = request.json['course_ids']
-    learning_journey.courses = []
-    for course_id in course_ids: 
-        course = Course.query.get(course_id)
-        learning_journey.courses.append(course)
     try:
         db.session.commit()
-        return learning_journey_with_courses_schema.jsonify(learning_journey), 201
-    except Exception:
+        return learning_journey_schema.jsonify(new_learning_journey),201
+    except Exception as e:
+        return jsonify({"message":"unable to commit to database"+str(e)
+        }),500
+
+#Update courses added to learning journey
+@learning_journey_api.route('/<id>', methods=['PUT'])
+def update_course_for_lj(id):
+    lj = LearningJourney.query.get(id)
+    print(lj)
+    course_ids = request.json['course_ids']
+    lj.courses = []
+    for course_id in course_ids:
+        course = Course.query.get(course_id)
+        lj.courses.append(course)
+    try:
+        db.session.commit()
+        return lj_with_courses_schema.jsonify(lj), 201
+    except Exception as e:
         return jsonify({
-            "message": "Unable to commit to database."
+            "message": "Unable to commit to database."+str(e)
         }), 500
 
 
