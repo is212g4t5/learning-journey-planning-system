@@ -2,14 +2,19 @@ from flask import Blueprint, jsonify, request
 from models.shared_model import db
 from models.LearningJourneyModel import LearningJourney
 from models.RoleModel import Role
-from models.StaffModel import Staff
+from models.SkillModel import Skill
+from models.CourseModel import Course
 
-from schemas.LearningJourneySchema import LearningJourneySchema
-from schemas.RoleSchema import RoleSchema, RoleWithSkillsSchema
+from schemas.LearningJourneySchema import LearningJourneySchema, LearningJourneyWithCoursesSchema
+from schemas.RoleSchema import RoleSchema
 from schemas.StaffSchema import StaffSchema
+from schemas.CourseSchema import CourseSchema
 
 learning_journey_schema = LearningJourneySchema()
 learning_journeys_schema = LearningJourneySchema(many=True)
+
+learning_journey_with_courses_schema = LearningJourneyWithCoursesSchema
+learning_journeys_with_courses_schema = LearningJourneyWithCoursesSchema(many=True)
 
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)
@@ -46,3 +51,23 @@ def create_learning_journey():
     db.session.commit()
 
     return learning_journey_schema.jsonify(new_learning_journey),201
+
+#Add Course to Learning Journey
+@learning_journey_api.route('/<id>/add', methods=['PUT'])
+def add_course_to_learning_journey(id):
+    learning_journey = LearningJourney.query.get(id)
+    course_ids = request.json['course_ids']
+    learning_journey.courses = []
+    for course_id in course_ids: 
+        course = Course.query.get(course_id)
+        learning_journey.courses.append(course)
+    try:
+        db.session.commit()
+        return learning_journey_with_courses_schema.jsonify(learning_journey), 201
+    except Exception:
+        return jsonify({
+            "message": "Unable to commit to database."
+        }), 500
+
+
+    
