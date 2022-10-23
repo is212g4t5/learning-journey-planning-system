@@ -106,6 +106,9 @@ export default {
     //   this.$router.push('/login')
     // }
 
+      console.log('USR DATA FROM COURSES PAGE:',this.$store.state.userData)
+
+
 
     let courseData = await axios.get("http://127.0.0.1:5000/api/courses/active/skills");
     console.log('active course data', courseData.data)
