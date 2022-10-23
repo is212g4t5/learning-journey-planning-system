@@ -7,6 +7,7 @@ from models.RoleModel import Role
 from models.StaffModel import Staff
 from schemas.RoleSchema import RoleSchema, RoleWithSkillsSchema
 from schemas.StaffSchema import StaffSchema
+from schemas.CourseSchema import CourseSchema
 
 learning_journey_schema = LearningJourneySchema()
 learning_journeys_schema = LearningJourneySchema(many=True)
