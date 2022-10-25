@@ -18,7 +18,6 @@ roles_schema = RoleSchema(many=True)
 
 staff_schema = StaffSchema()
 staffs_schema = StaffSchema(many=True)
-
 course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
 
@@ -64,15 +63,32 @@ def create_learning_journey():
 @learning_journey_api.route('/<id>', methods=['PUT'])
 def update_course_for_lj(id):
     lj = LearningJourney.query.get(id)
-    print(lj)
-    course_ids = request.json['course_id']
-    lj.courses = []
+    course_ids = request.json['course_ids']
     for course_id in course_ids:
         course = Course.query.get(course_id)
         lj.courses.append(course)
     try:
         db.session.commit()
         return lj_with_courses_schema.jsonify(lj), 201
+    except Exception as e:
+        return jsonify({
+            "message": "Unable to commit to database."+str(e)
+        }), 500
+
+#Update courses added to learning journey
+@learning_journey_api.route('/<id>/courses', methods=['DELETE'])
+def delete_course_for_lj(id):
+    lj = LearningJourney.query.get(id)
+    course_id = request.json['course_id']
+    lj_courses = lj.courses
+    courses_edited = []
+    for course in lj_courses:
+        if course.id!=course_id:
+            courses_edited.append(course)
+    lj.courses = courses_edited
+    try:
+        db.session.commit()
+        return lj_with_courses_schema.jsonify(lj), 200
     except Exception as e:
         return jsonify({
             "message": "Unable to commit to database."+str(e)
