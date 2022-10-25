@@ -21,7 +21,7 @@
         class="text-center font-700"
         style="color: #525252; font-size: 28px; "
       >
-        Reccomended Courses
+        Recommended Courses
       </div>
       <div
         class="q-mx-auto q-mb-lg"
