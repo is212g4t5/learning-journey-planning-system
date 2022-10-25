@@ -4,7 +4,7 @@ from models.shared_model import db, lj_course
 class LearningJourney(db.Model):
     __tablename__ = 'learning_journey'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     staff_id = db.Column(db.Integer, db.ForeignKey('staff.id'), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     
