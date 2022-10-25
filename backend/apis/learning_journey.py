@@ -39,10 +39,13 @@ def create_learning_journey():
     name = request.json['name']
     staff_id = request.json['staff_id']
     role_id = request.json['role_id']
-    course_id = request.json['course_id']
-    course = Course.query.get(course_id)
+    course_ids = request.json['course_ids']
+    courses = []
+    for course_id in course_ids:
+        course = Course.query.get(course_id)
+        courses.append(course)
         
-    new_learning_journey = LearningJourney(name, staff_id, role_id, [course])
+    new_learning_journey = LearningJourney(name, staff_id, role_id, [courses])
     db.session.add(new_learning_journey)
     try:
         db.session.commit()
