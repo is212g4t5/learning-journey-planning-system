@@ -44,8 +44,10 @@ def create_learning_journey():
     for course_id in course_ids:
         course = Course.query.get(course_id)
         courses.append(course)
-        
+    
     new_learning_journey = LearningJourney(name, staff_id, role_id, [courses])
+    
+    print('hello')
     db.session.add(new_learning_journey)
     try:
         db.session.commit()

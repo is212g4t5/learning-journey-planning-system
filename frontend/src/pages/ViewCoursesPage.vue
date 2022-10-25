@@ -100,7 +100,7 @@
 
             <q-card-actions align="right" class="q-mt-sm">
               <q-btn flat label="Cancel" color="primary" v-close-popup />
-              <q-btn  label="Create Learning Journey" color="primary" type="submit" />
+              <q-btn  label="Create Learning Journey" color="primary" @click="handleCreate()"/>
             </q-card-actions>
 
             
@@ -121,6 +121,7 @@ export default {
       coursesWithSkill:[],
       currSkillId:'',
       currJobId:'',
+      jobData:{},
       defaultOptions: {
         animationData: animationData.default,
         loop:true,
@@ -135,6 +136,25 @@ export default {
     Lottie
   },
   methods: {
+    async handleCreate(){
+      console.log('input to post',{
+        name:"Learning Journey - " + this.jobData.name,
+        staff_id:this.$store.state.userData.id,
+        role_id:Number(this.currJobId),
+        course_ids:this.selection
+      })
+
+  
+
+      let createLJ_res = await axios.post("http://127.0.0.1:5000/api/learning_journeys/create",{
+        name:"Learning Journey - " + this.jobData.name,
+        staff_id:this.$store.state.userData.id,
+        role_id:Number(this.currJobId),
+        course_ids:this.selection
+      });
+
+      console.log(createLJ_res)
+    }
   },
   async mounted(){
     // console.log('vuex user',this.$store.state.user)
@@ -143,12 +163,12 @@ export default {
     //   this.$router.push('/login')
     // }
 
-    console.log('USR DATA FROM COURSES PAGE:',this.$store.state.userData)
+    console.log('USE DATA FROM COURSES PAGE:',this.$store.state.userData)
 
 
 
     let courseData = await axios.get("http://127.0.0.1:5000/api/courses/active/skills");
-    console.log('active course data', courseData.data)
+    // console.log('active course data', courseData.data)
 
     this.currJobId =  this.$route.params.jobId
 
@@ -169,23 +189,25 @@ export default {
         }
     });
 
-    console.log('all courses with skill:',coursesWithSkill)
-    console.log('current skill details:',currSkillInfo)
-
     this.coursesWithSkill = coursesWithSkill
 
-
     let allSkills = await axios.get("http://127.0.0.1:5000/api/skills");
-
-    console.log('all skill data:', allSkills)
     allSkills.data.forEach(element => {
       if (element.id == currSkillId){
         this.currSkillInfo = element
       }
     });
 
-    // this.currSkillInfo = currSkillInfo
-    console.log()
+
+    let roleData = await axios.get("http://127.0.0.1:5000/api/roles");
+    console.log('JOB ROLE DATA', roleData.data)
+    roleData.data.forEach((element) => {
+      if (element.id == this.currJobId) {
+        this.jobData = element
+      }
+    });
+
+
    
     
   }
