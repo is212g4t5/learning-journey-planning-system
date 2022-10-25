@@ -50,7 +50,7 @@ def create_learning_journey():
     new_learning_journey = LearningJourney(name, staff_id, role_id)
     for course_id in course_ids:
         course = Course.query.get(course_id)
-        new_learning_journey.append(course)
+        new_learning_journey.courses.append(course)
 
     db.session.add(new_learning_journey)
     try:
