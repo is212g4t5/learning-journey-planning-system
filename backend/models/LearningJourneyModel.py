@@ -10,8 +10,8 @@ class LearningJourney(db.Model):
     
     courses = db.relationship('Course', secondary=lj_course, backref='learning_journeys', lazy=True)
 
-    def __init__(self, name, staff_id, role_id, course):
+    def __init__(self, name, staff_id, role_id):
         self.name = name
         self.staff_id = staff_id
         self.role_id = role_id
-        self.courses = course
+        # self.courses = courses
