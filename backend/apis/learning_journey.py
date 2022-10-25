@@ -19,6 +19,9 @@ roles_schema = RoleSchema(many=True)
 staff_schema = StaffSchema()
 staffs_schema = StaffSchema(many=True)
 
+course_schema = CourseSchema()
+courses_schema = CourseSchema(many=True)
+
 learning_journey_api = Blueprint('learning_journey_api', __name__)
 
 #Get All Learning Journeys
@@ -40,12 +43,12 @@ def create_learning_journey():
     staff_id = request.json['staff_id']
     role_id = request.json['role_id']
     course_ids = request.json['course_ids']
-    courses = []
+  
+    new_learning_journey = LearningJourney(name, staff_id, role_id)
     for course_id in course_ids:
         course = Course.query.get(course_id)
-        courses.append(course)
+        new_learning_journey.append(course)
         
-    new_learning_journey = LearningJourney(name, staff_id, role_id, [courses])
     db.session.add(new_learning_journey)
     try:
         db.session.commit()

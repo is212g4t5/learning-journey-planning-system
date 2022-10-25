@@ -19,11 +19,11 @@ def test_course_model():
 
 #unit test for LearningJourneyModel
 def test_learning_journey_model():
-    learning_journey = LearningJourney('test_learning_journey', 1, 1,[])
+    learning_journey = LearningJourney('test_learning_journey', 1, 1)
     assert learning_journey.name == 'test_learning_journey'
     assert learning_journey.staff_id == 1
     assert learning_journey.role_id == 1
-    assert learning_journey.courses ==[]
+    # assert learning_journey.courses ==[]
 
 #unit test for RegistrationModel
 def test_registration_model():
