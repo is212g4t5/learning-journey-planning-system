@@ -28,6 +28,8 @@
         style="background-color: #a8a8ff; width: 75px; height: 2px"
       ></div>
 
+      <q-btn label="Create Learning Journey" color="primary" class="absolute" style="right:40px; top:75px" @click="createLJ = !createLJ"></q-btn>
+
 
       <div class="text-center" v-if="coursesWithSkill.length==0">
         <Lottie :options="defaultOptions" style="width:20vw" />
@@ -56,10 +58,16 @@
                 </div>
                 </div>
 
-                <div class="q-mt-md">
-                <q-icon name="place" size="sm" style="color:#96BB7C"></q-icon>
-                {{course.type}}
+                <div class="q-mt-md flex justify-between items-center" style="width:300px">
+                  <div class="">
+                    <q-icon name="place" size="sm" style="color:#96BB7C"></q-icon>
+                    {{course.type}}
+                  </div>
+                 
+                  <q-checkbox v-model="selection" :val="course.id" label="Select course" color="green" />
                 </div>
+
+               
            </div>
           
 
@@ -73,6 +81,31 @@
 
 
     </div>
+
+     <!-- add skill dialog -->
+     <q-dialog v-model="createLJ">
+          <q-card class="q-pa-md" style="width:50vw">
+            <div class="text-center font-700" style="color:#525252; font-size:28px">Create Learning Journey</div>
+            <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+           
+
+            
+            <div class="q-mx-md">
+              Do you want to create learning joruney for <strong>Senior Engineer</strong>?
+              <br>
+              Courses that will be added to learning journey: <span v-for="course in selection" :key="course"> <strong>{{course}} </strong> </span>
+            </div>
+            
+
+            <q-card-actions align="right" class="q-mt-sm">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn  label="Create Learning Journey" color="primary" type="submit" />
+            </q-card-actions>
+
+            
+          </q-card>
+        </q-dialog>
     
   </q-page>
 </template>
@@ -87,11 +120,15 @@ export default {
       currSkillInfo:{},
       coursesWithSkill:[],
       currSkillId:'',
+      currJobId:'',
       defaultOptions: {
         animationData: animationData.default,
         loop:true,
-        autoplay:true
+        autoplay:true,
       },
+
+      selection:[],
+      createLJ:false
     }
   },
   components: {
@@ -106,14 +143,15 @@ export default {
     //   this.$router.push('/login')
     // }
 
-      console.log('USR DATA FROM COURSES PAGE:',this.$store.state.userData)
+    console.log('USR DATA FROM COURSES PAGE:',this.$store.state.userData)
 
 
 
     let courseData = await axios.get("http://127.0.0.1:5000/api/courses/active/skills");
     console.log('active course data', courseData.data)
 
-    
+    this.currJobId =  this.$route.params.jobId
+
     let currSkillId = this.$route.params.skillId
     this.currSkillId = currSkillId
 
