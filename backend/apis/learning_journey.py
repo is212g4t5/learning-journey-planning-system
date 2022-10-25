@@ -43,12 +43,15 @@ def create_learning_journey():
     staff_id = request.json['staff_id']
     role_id = request.json['role_id']
     course_ids = request.json['course_ids']
-  
+
+    if LearningJourney.query.filter_by(staff_id=staff_id, role_id=role_id).first():
+        return jsonify({"message": "Learning Journey already exists"}),500
+    
     new_learning_journey = LearningJourney(name, staff_id, role_id)
     for course_id in course_ids:
         course = Course.query.get(course_id)
-        new_learning_journey.courses.append(course)
-        
+        new_learning_journey.append(course)
+
     db.session.add(new_learning_journey)
     try:
         db.session.commit()
