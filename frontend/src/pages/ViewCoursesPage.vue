@@ -144,16 +144,26 @@ export default {
         course_ids:this.selection
       })
 
+      try{
+        let createLJ_res = await axios.post("http://127.0.0.1:5000/api/learning_journeys/create",{
+          name:"Learning Journey - " + this.jobData.name,
+          staff_id:this.$store.state.userData.id,
+          role_id:Number(this.currJobId),
+          course_ids:this.selection
+        });
+
+        console.log(createLJ_res.data)
+
+        this.$router.push(`/learning_journey/${localStorage.token}`)
+
+      }catch(err){
+        console.log(err, 'failed to add to db')
+      }
   
 
-      let createLJ_res = await axios.post("http://127.0.0.1:5000/api/learning_journeys/create",{
-        name:"Learning Journey - " + this.jobData.name,
-        staff_id:this.$store.state.userData.id,
-        role_id:Number(this.currJobId),
-        course_ids:this.selection
-      });
+      
 
-      console.log(createLJ_res)
+
     }
   },
   async mounted(){
