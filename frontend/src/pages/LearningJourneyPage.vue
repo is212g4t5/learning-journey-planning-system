@@ -10,9 +10,22 @@
 
 
 
-    <div v-else class="">
-      {{currUserLearningJourney}}
+    <div v-else class="q-px-md">
+      <!-- {{currUserLearningJourney}} -->
 
+      <div v-for="LJ in currUserLearningJourney" :key="LJ.id" class="flex shadow-3 q-mt-md ljCard" style="">
+        <img src="~assets/learning_journey.jpg" alt="" style="width:300px;border-top-left-radius:10px;border-bottom-left-radius:10px;">
+
+        <div class="q-pl-lg q-py-sm">
+          <div class="" style="color:#767676;font-weight:500; font-size:24px">{{LJ.name}}</div>
+          <div class="" style="color:#333333; font-weight:600; font-size:32px">{{LJ.name.split('-')[1]}}</div>
+
+
+          <q-btn label="view" color="green" outline icon-right="keyboard_arrow_right" class="q-mr-sm q-mt-md"></q-btn>
+          <q-btn label="delete" color="red" outline class="q-mt-md"></q-btn>
+        </div>
+      </div>
+   
 
     </div>
   </q-page>
@@ -65,3 +78,15 @@ export default {
   }
 }
 </script>
+<style>
+.ljCard{
+  transition:0.3s;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.ljCard:hover{
+  transform:translateY(-5px);
+  box-shadow: rgb(254 153 2) 0px 0px 20px;
+}
+</style>
