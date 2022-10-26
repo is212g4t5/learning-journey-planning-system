@@ -96,3 +96,11 @@ def delete_course_for_lj(id):
 
 
     
+
+#Delete Learning Journey
+@learning_journey_api.route('/<id>', methods=['DELETE'])
+def delete_learning_journey(id):
+    learning_journey = LearningJourney.query.get(id)
+    db.session.delete(learning_journey)
+    db.session.commit()
+    return learning_journey_schema.jsonify(learning_journey)
