@@ -92,7 +92,7 @@
 
             
             <div class="q-mx-md">
-              Do you want to create learning joruney for <strong>Senior Engineer</strong>?
+              Do you want to create learning joruney for <strong>{{this.jobData.name}}</strong>?
               <br>
               Courses that will be added to learning journey: <span v-for="course in selection" :key="course"> <strong>{{course}} </strong> </span>
             </div>
