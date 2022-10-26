@@ -85,7 +85,8 @@ export default {
       this.deleteDialog = !this.deleteDialog
     },
     async handleDelete(){
-      // let deleteRes = await axios.delete('')
+      console.log('curr LJ to delete', this.LJ)
+      // let deleteRes = await axios.delete(`http://127.0.0.1:5000/api/learning_journeys/${this.LJ.id}`)
     }
   },
   async mounted(){
