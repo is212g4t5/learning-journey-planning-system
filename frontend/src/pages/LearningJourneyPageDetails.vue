@@ -30,10 +30,10 @@
         ></div>
 
 
-        
+
 
       <div class="flex items-center justify-around q-mb-md">
-        <div v-for="course in currUserLearningJourney.courses" :key="course.id" style="width:350px;height:550px;background:white;border-radius:5px;position:relative;" class="shadow-4">
+        <div v-for="course in currUserLearningJourney.courses" :key="course.id" style="width:350px;height:580px;background:white;border-radius:5px;position:relative;" class="shadow-4">
           <img src="~assets/courseImage.png" style="width:100%;border-top-left-radius:5px;border-top-right-radius:5px" alt="">
           <div class="q-px-md q-py-sm">
             <div class="q-mb-sm" style="font-size:20px;font-weight:700">{{course.name}}</div>
@@ -64,7 +64,7 @@
                     <div v-else class="q-pa-sm text-center text-white" style="background:red; border-radius:10px">{{course.status}}</div>
                   </div>
                  
-                  <q-btn v-if="currUserLearningJourney.courses.length>1" label="delete" color="red"></q-btn>
+                  <q-btn v-if="currUserLearningJourney.courses.length>1" label="delete" color="red" @click="openDeleteDialog(course)"></q-btn>
                 </div>
 
                
@@ -79,6 +79,30 @@
    
 
     </div>
+
+
+    <q-dialog v-model="deleteDialog">
+      <q-card class="q-pa-md" style="width:50vw">
+        <div class="text-center font-700" style="color:#525252; font-size:28px">Delete Course From Learning Journey</div>
+        <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+        
+
+        
+        <div class="q-mx-md">
+          Are you sure you want to delete <strong>{{currentCourse.name}}</strong> from <strong>{{currUserLearningJourney.name}}</strong>?
+          
+        </div>
+        
+
+        <q-card-actions align="right" class="q-mt-sm">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn  label="Delete Learning Journey" color="primary" @click="deleteCourseFromLJ()"/>
+        </q-card-actions>
+
+        
+      </q-card>
+    </q-dialog>
 
 
 
@@ -101,14 +125,30 @@ export default {
       },
 
 
-      currUserLearningJourney:[]
+      currUserLearningJourney:[],
+      deleteDialog:false,
+      currentCourse:{}
     }
   },
   components: {
     Lottie
   },
   methods: {
-   
+    openDeleteDialog(course){
+      this.currentCourse = course
+      this.deleteDialog = true
+    },
+
+   async deleteCourseFromLJ(){
+    let deleteRes = await axios.delete(`http://127.0.0.1:5000/api/learning_journeys/${this.$route.params.id}/courses/${this.currentCourse.id}`)
+    console.log(deleteRes.data)
+
+    let learningJourney_data = await axios.get(`http://127.0.0.1:5000/api/learning_journeys/${this.$route.params.id}`)
+    console.log(learningJourney_data.data)
+    this.currUserLearningJourney = learningJourney_data.data
+
+    this.deleteDialog = false
+   }
   },
   async mounted(){
     console.log('vuex user',this.$store.state.user)
