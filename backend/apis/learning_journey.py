@@ -34,6 +34,8 @@ def get_learning_journeys():
 @learning_journey_api.route('/<id>', methods=['GET'])
 def get_learning_journey(id):
     args = request.args
+    print(args.get('courses_not_in_lj'))
+    print('courses_not_in_lj' in args)
     if 'courses_not_in_lj' in args:
         lj = LearningJourney.query.get(id)
         role = Role.query.get(lj.role_id)
