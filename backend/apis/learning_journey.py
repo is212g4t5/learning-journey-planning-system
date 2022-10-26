@@ -33,8 +33,24 @@ def get_learning_journeys():
 #Get Single Learning Journey with Courses and it's skills
 @learning_journey_api.route('/<id>', methods=['GET'])
 def get_learning_journey(id):
+    args = request.args
+    if 'courses_not_in_lj' in args:
+        lj = LearningJourney.query.get(id)
+        role = Role.query.get(lj.role_id)
+        courses = Course.query.all()
+        courses_to_return = []
+        for course in courses:
+            if course not in lj.courses:
+                for skill in course.skills:
+                    if skill in role.skills:
+                        courses_to_return.append(course)
+                        break
+        return courses_schema.jsonify(courses_to_return)
+
+
     learning_journey = LearningJourney.query.get(id)
     return lj_with_courses_with_skills_schema.jsonify(learning_journey)
+
 
 #Create Learning Journey
 @learning_journey_api.route('/create', methods=['POST'])
@@ -75,6 +91,8 @@ def update_course_for_lj(id):
         return jsonify({
             "message": "Unable to commit to database."+str(e)
         }), 500
+
+
 
 #delete courses added to learning journey
 @learning_journey_api.route('/<lj_id>/courses/<course_id>', methods=['DELETE'])
