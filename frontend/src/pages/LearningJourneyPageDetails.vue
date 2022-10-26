@@ -28,21 +28,9 @@
           class="q-mx-auto q-mb-lg"
           style="background-color: #a8a8ff; width: 75px; height: 2px"
         ></div>
-<!--       
-
-      <div v-for="LJ in currUserLearningJourney" :key="LJ.id" class="flex shadow-3 q-mt-md ljCard" style="">
-        <img src="~assets/courseImage.png" alt="" style="width:300px;border-top-left-radius:10px;border-bottom-left-radius:10px;">
-
-        <div class="q-pl-lg q-py-sm">
-          <div class="" style="color:#767676;font-weight:500; font-size:24px">{{LJ.name}}</div>
-          <div class="" style="color:#333333; font-weight:600; font-size:32px">{{LJ.name.split('-')[1]}}</div>
 
 
-          <q-btn label="view" color="green" outline icon-right="keyboard_arrow_right" class="q-mr-sm q-mt-md" ></q-btn>
-          <q-btn label="delete" color="red" outline class="q-mt-md" @click="openDeleteDialog(LJ)"></q-btn>
-        </div>
-      </div> -->
-
+        
 
       <div class="flex items-center justify-around q-mb-md">
         <div v-for="course in currUserLearningJourney.courses" :key="course.id" style="width:350px;height:550px;background:white;border-radius:5px;position:relative;" class="shadow-4">

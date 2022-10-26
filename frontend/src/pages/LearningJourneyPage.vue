@@ -37,6 +37,9 @@
           class="q-mx-auto q-mb-lg"
           style="background-color: #a8a8ff; width: 75px; height: 2px"
         ></div>
+
+        <q-btn label="Add Course To Learning Journey" color="primary" no-caps class="addButton absolute" style="right:30px; top:30px;z-index:1" ></q-btn>
+      
       
 
       <div v-for="LJ in currUserLearningJourney" :key="LJ.id" class="flex shadow-3 q-mt-md ljCard" style="">
