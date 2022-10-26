@@ -207,6 +207,10 @@ export default {
     if (localStorage.token == undefined){
       this.$router.push('/login')
     } 
+
+    if (this.$store.state.user == ''){
+      this.$router.push('/login')
+    }
   
   }
 }
