@@ -76,7 +76,7 @@
                     <div v-else class="q-pa-sm text-center text-white" style="background:red; border-radius:10px">{{course.status}}</div>
                   </div>
                  
-                  <q-btn label="delete" color="red"></q-btn>
+                  <q-btn v-if="currUserLearningJourney.courses.length>1" label="delete" color="red"></q-btn>
                 </div>
 
                
