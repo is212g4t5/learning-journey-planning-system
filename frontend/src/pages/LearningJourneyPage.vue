@@ -22,12 +22,38 @@
 
 
           <q-btn label="view" color="green" outline icon-right="keyboard_arrow_right" class="q-mr-sm q-mt-md"></q-btn>
-          <q-btn label="delete" color="red" outline class="q-mt-md"></q-btn>
+          <q-btn label="delete" color="red" outline class="q-mt-md" @click="openDeleteDialog(LJ)"></q-btn>
         </div>
       </div>
    
 
     </div>
+
+
+
+
+    <q-dialog v-model="deleteDialog">
+      <q-card class="q-pa-md" style="width:50vw">
+        <div class="text-center font-700" style="color:#525252; font-size:28px">Delete Learning Journey</div>
+        <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+        
+
+        
+        <div class="q-mx-md">
+          Are you sure you want to delete <strong>{{LJ.name}}</strong>?
+          
+        </div>
+        
+
+        <q-card-actions align="right" class="q-mt-sm">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn  label="Delete Learning Journey" color="primary" @click="handleDelete()"/>
+        </q-card-actions>
+
+        
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -43,6 +69,8 @@ export default {
         loop:true,
         autoplay:true
       },
+      deleteDialog:false,
+      LJ:{},
 
 
       currUserLearningJourney:[]
@@ -52,6 +80,13 @@ export default {
     Lottie
   },
   methods: {
+    openDeleteDialog(LJ){
+      this.LJ = LJ
+      this.deleteDialog = !this.deleteDialog
+    },
+    async handleDelete(){
+      // let deleteRes = await axios.delete('')
+    }
   },
   async mounted(){
     console.log('vuex user',this.$store.state.user)
