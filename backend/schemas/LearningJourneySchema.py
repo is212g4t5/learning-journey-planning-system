@@ -8,9 +8,10 @@ class LearningJourneySchema(ma.SQLAlchemyAutoSchema):
         include_fk =True
 
 
-#Course with Skills Schema
+#LearningJourney with Course Schema
 class LearningJourneyWithCoursesSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = LearningJourney
         include_fk =True
-    courses = ma.Nested('CourseSchema', many=True)
+    courses = ma.Nested('CourseWithSkillsSchema', many=True)
+
