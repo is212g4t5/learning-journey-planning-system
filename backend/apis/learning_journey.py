@@ -42,9 +42,9 @@ def get_learning_journey(id):
         courses = Course.query.all()
         courses_to_return = []
         for course in courses:
-            if course not in lj.courses:
+            if course not in lj.courses and course.status == 'Active':
                 for skill in course.skills:
-                    if skill in role.skills:
+                    if skill.active and skill in role.skills:
                         courses_to_return.append(course)
                         break
         return courses_schema.jsonify(courses_to_return)
