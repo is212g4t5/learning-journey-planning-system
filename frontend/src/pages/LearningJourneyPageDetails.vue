@@ -45,7 +45,7 @@
 
 
       <div class="flex items-center justify-around q-mb-md">
-        <div v-for="course in currUserLearningJourney.courses" :key="course.id" class="" style="width:350px;height:550px;background:white;border-radius:5px;position:relative;" class="shadow-4">
+        <div v-for="course in currUserLearningJourney.courses" :key="course.id" style="width:350px;height:550px;background:white;border-radius:5px;position:relative;" class="shadow-4">
           <img src="~assets/courseImage.png" style="width:100%;border-top-left-radius:5px;border-top-right-radius:5px" alt="">
           <div class="q-px-md q-py-sm">
             <div class="q-mb-sm" style="font-size:20px;font-weight:700">{{course.name}}</div>
