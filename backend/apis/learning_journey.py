@@ -23,17 +23,17 @@ courses_schema = CourseSchema(many=True)
 
 learning_journey_api = Blueprint('learning_journey_api', __name__)
 
-#Get All Learning Journeys
+#Get All Learning Journeys with Courses
 @learning_journey_api.route('/', methods=['GET'])
 def get_learning_journeys():
     all_learning_journeys = LearningJourney.query.all()
     return learning_journeys_schema.jsonify(all_learning_journeys)
 
-#Get Single Learning Journey
+#Get Single Learning Journey with Courses
 @learning_journey_api.route('/<id>', methods=['GET'])
 def get_learning_journey(id):
     learning_journey = LearningJourney.query.get(id)
-    return learning_journey_schema.jsonify(learning_journey)
+    return lj_with_courses_schema.jsonify(learning_journey)
 
 #Create Learning Journey
 @learning_journey_api.route('/create', methods=['POST'])
