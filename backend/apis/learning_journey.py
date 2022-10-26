@@ -7,7 +7,7 @@ from models.RoleModel import Role
 from models.StaffModel import Staff
 from schemas.RoleSchema import RoleSchema, RoleWithSkillsSchema
 from schemas.StaffSchema import StaffSchema
-from schemas.CourseSchema import CourseSchema
+from schemas.CourseSchema import CourseSchema, CourseWithSkillsSchema
 
 learning_journey_schema = LearningJourneySchema()
 learning_journeys_schema = LearningJourneySchema(many=True)
@@ -21,6 +21,8 @@ staff_schema = StaffSchema()
 staffs_schema = StaffSchema(many=True)
 course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
+
+courses_with_skills_schema = CourseWithSkillsSchema(many=True)
 
 learning_journey_api = Blueprint('learning_journey_api', __name__)
 
@@ -47,7 +49,7 @@ def get_learning_journey(id):
                     if skill.active and skill in role.skills:
                         courses_to_return.append(course)
                         break
-        return courses_schema.jsonify(courses_to_return)
+        return courses_with_skills_schema.jsonify(courses_to_return)
 
 
     learning_journey = LearningJourney.query.get(id)
