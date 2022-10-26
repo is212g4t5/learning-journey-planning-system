@@ -2,7 +2,7 @@ from models.CourseModel import Course
 from flask import Blueprint, jsonify, request
 from models.shared_model import db
 from models.LearningJourneyModel import LearningJourney
-from schemas.LearningJourneySchema import LearningJourneySchema, LearningJourneyWithCoursesSchema
+from schemas.LearningJourneySchema import LearningJourneySchema, LearningJourneyWithCoursesSchema, LearningJourneyWithCoursesWithSkillsSchema
 from models.RoleModel import Role
 from models.StaffModel import Staff
 from schemas.RoleSchema import RoleSchema, RoleWithSkillsSchema
@@ -11,8 +11,9 @@ from schemas.CourseSchema import CourseSchema
 
 learning_journey_schema = LearningJourneySchema()
 learning_journeys_schema = LearningJourneySchema(many=True)
-
 lj_with_courses_schema = LearningJourneyWithCoursesSchema()
+lj_with_courses_with_skills_schema = LearningJourneyWithCoursesWithSkillsSchema()
+
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)
 
@@ -29,11 +30,11 @@ def get_learning_journeys():
     all_learning_journeys = LearningJourney.query.all()
     return learning_journeys_schema.jsonify(all_learning_journeys)
 
-#Get Single Learning Journey with Courses
+#Get Single Learning Journey with Courses and it's skills
 @learning_journey_api.route('/<id>', methods=['GET'])
 def get_learning_journey(id):
     learning_journey = LearningJourney.query.get(id)
-    return lj_with_courses_schema.jsonify(learning_journey)
+    return lj_with_courses_with_skills_schema.jsonify(learning_journey)
 
 #Create Learning Journey
 @learning_journey_api.route('/create', methods=['POST'])
