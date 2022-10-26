@@ -76,11 +76,10 @@ def update_course_for_lj(id):
             "message": "Unable to commit to database."+str(e)
         }), 500
 
-#Update courses added to learning journey
-@learning_journey_api.route('/<id>/courses', methods=['DELETE'])
-def delete_course_for_lj(id):
-    lj = LearningJourney.query.get(id)
-    course_id = request.json['course_id']
+#delete courses added to learning journey
+@learning_journey_api.route('/<lj_id>/courses/<course_id>', methods=['DELETE'])
+def delete_course_for_lj(lj_id,course_id):
+    lj = LearningJourney.query.get(lj_id)
     lj_courses = lj.courses
     courses_edited = []
     for course in lj_courses:
