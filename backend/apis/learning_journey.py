@@ -65,7 +65,7 @@ def create_learning_journey():
     course_ids = request.json['course_ids']
 
     if LearningJourney.query.filter_by(staff_id=staff_id, role_id=role_id).first():
-        return jsonify({"message": "Learning Journey already exists"}),500
+        return jsonify({"message": "Learning Journey already exists"}),400
     
     new_learning_journey = LearningJourney(name, staff_id, role_id)
     for course_id in course_ids:
