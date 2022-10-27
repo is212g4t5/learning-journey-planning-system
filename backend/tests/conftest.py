@@ -1,5 +1,7 @@
 import multiprocessing
 import time
+from models.CourseModel import Course
+from models.LearningJourneyModel import LearningJourney
 import pytest
 import os
 
@@ -38,6 +40,40 @@ def db_setup(app):
 
 
 #Create data for testing
+
+#create a fixture for creating data required to test create learning journey
+@pytest.fixture( scope="function")
+def create_courses(app):
+    course1 = Course(id="COR001", name="TestC1",description="TestDesc",status="active",type="testType1",category="testCat1")
+    course2 = Course(id="COR002", name="TestC2",description="TestDesc",status="active",type="testType2",category="testCat2")
+    course3 = Course(id="COR003", name="TestC3",description="TestDesc",status="active",type="testType3",category="testCat3")
+    
+    with app.app_context():
+
+        db.session.add(course1)
+        db.session.add(course2)
+        db.session.add(course3)
+        db.session.commit()
+    
+    return course1,course2,course3
+
+#create a fixture for creating lj
+@pytest.fixture( scope="function")
+def create_ljs(app):
+    course1 = Course(id="COR001", name="TestC1",description="TestDesc",status="active",type="testType1",category="testCat1")
+    course2 = Course(id="COR002", name="TestC2",description="TestDesc",status="active",type="testType2",category="testCat2")
+    course3 = Course(id="COR003", name="TestC3",description="TestDesc",status="active",type="testType3",category="testCat3")
+    lj1 = LearningJourney(name="TestLJ1",staff_id=1,role_id=1)
+    lj1.courses=[course1]
+    lj2 = LearningJourney(name="TestLJ2",staff_id=2,role_id=1)
+    lj2.courses=[course2,course3]
+    
+    with app.app_context():
+        db.session.add(lj1)
+        db.session.add(lj2)
+        db.session.commit()
+    
+    return lj1,lj2
 
 #create a fixture for adding skills to db
 @pytest.fixture( scope="function")
