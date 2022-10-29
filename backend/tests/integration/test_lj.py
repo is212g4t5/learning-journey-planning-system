@@ -28,12 +28,12 @@ class TestLJ:
         test_data={
             "course_ids":["COR002","COR003"]
         }
-        put_testing(client,self.url+"1",test_data,"name","TestLJ1")
+        put_testing(client,self.url+"1",test_data,"course_ids","courses")
 
     def test_remove_course(self,client,create_ljs):
         response = client.delete(self.url+"/2/courses/COR002") 
         assert response.status_code==308
-        #assert 0==1, "response is "+str(response)
+        #assert 0==1, "response is "+str(response.data)
         # res = json.loads(response.data.decode('utf-8'))
         # courses = res["courses"]
         # for course in courses:
