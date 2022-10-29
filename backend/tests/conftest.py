@@ -60,9 +60,9 @@ def create_courses(app):
 #create a fixture for creating lj
 @pytest.fixture( scope="function")
 def create_ljs(app):
-    course1 = Course(id="COR001", name="TestC1",description="TestDesc",status="active",type="testType1",category="testCat1")
-    course2 = Course(id="COR002", name="TestC2",description="TestDesc",status="active",type="testType2",category="testCat2")
-    course3 = Course(id="COR003", name="TestC3",description="TestDesc",status="active",type="testType3",category="testCat3")
+    course1 = Course(id="COR001", name="TestC1",description="TestDesc",status="Active",type="testType1",category="testCat1")
+    course2 = Course(id="COR002", name="TestC2",description="TestDesc",status="Active",type="testType2",category="testCat2")
+    course3 = Course(id="COR003", name="TestC3",description="TestDesc",status="Active",type="testType3",category="testCat3")
     lj1 = LearningJourney(name="TestLJ1",staff_id=1,role_id=1)
     lj1.courses=[course1]
     lj2 = LearningJourney(name="TestLJ2",staff_id=2,role_id=1)

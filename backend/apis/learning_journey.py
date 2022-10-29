@@ -36,9 +36,10 @@ def get_learning_journeys():
 @learning_journey_api.route('/<id>', methods=['GET'])
 def get_learning_journey(id):
     args = request.args
-    print(args.get('courses_not_in_lj'))
-    print('courses_not_in_lj' in args)
-    if 'courses_not_in_lj' in args:
+
+    #get eligible courses for learning journey
+    if 'courses_not_in_lj' in args and args['courses_not_in_lj'] == 'true':
+        
         lj = LearningJourney.query.get(id)
         role = Role.query.get(lj.role_id)
         courses = Course.query.all()
@@ -123,6 +124,8 @@ def delete_course_for_lj(lj_id,course_id):
 @learning_journey_api.route('/<id>', methods=['DELETE'])
 def delete_learning_journey(id):
     learning_journey = LearningJourney.query.get(id)
+    if not learning_journey:
+        return jsonify({"message": "Learning Journey does not exist"}), 404
     db.session.delete(learning_journey)
     db.session.commit()
-    return learning_journey_schema.jsonify(learning_journey)
+    return jsonify({"message": "Learning Journey deleted"}), 200

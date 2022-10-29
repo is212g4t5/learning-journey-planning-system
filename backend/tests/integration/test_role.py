@@ -15,6 +15,17 @@ class TestRole:
         self.db = db_setup
         self.app = app
         
+    #test create role and invalide create role
+    def test_create_role(self,client):
+        post_data={
+            "name": "TestRoleX",
+            "description": "TestDescX",
+            "active": True
+            } 
+        #post testing test for both valid and duplicate data
+        post_testing(client,self.url,post_data,"name",post_data["name"])
+
+
     #test get all roles
     def test_get_all_roles(self,client):
         get_all_testing(client,self.url,3)
