@@ -91,7 +91,7 @@ def update_course_for_lj(id):
         lj.courses.append(course)
     try:
         db.session.commit()
-        return lj_with_courses_with_skills_schema.jsonify(lj), 201
+        return lj_with_courses_with_skills_schema.jsonify(lj), 200
     except Exception as e:
         return jsonify({
             "message": "Unable to commit to database."+str(e)

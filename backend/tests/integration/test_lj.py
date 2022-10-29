@@ -1,6 +1,7 @@
 import pytest
+import json
 from models.LearningJourneyModel import LearningJourney
-from tests.util import get_all_testing, post_testing
+from tests.util import get_all_testing, post_testing, put_testing
 from models.SkillModel import Skill
 from models.RoleModel import Role
 from models.CourseModel import Course
@@ -13,7 +14,7 @@ class TestLJ:
         self.db = db_setup
         self.app = app
 
-    #test create LJ and invalide create LJ (duplicate name)
+    #test create LJ and invalid create LJ (duplicate name)
     def test_post_LJ(self,client,create_courses):
         test_data={
             "name":"NewLJ",
@@ -22,6 +23,22 @@ class TestLJ:
             "course_ids":["COR001","COR003"]
         }
         post_testing(client,self.url+"create",test_data,"name","NewLJ")
+
+    def test_post_courses(self,client,create_ljs):
+        test_data={
+            "course_ids":["COR002","COR003"]
+        }
+        put_testing(client,self.url+"1",test_data,"course_ids","courses")
+
+    def test_remove_course(self,client,create_ljs):
+        response = client.delete(self.url+"/2/courses/COR002") 
+        assert response.status_code==308
+        #assert 0==1, "response is "+str(response.data)
+        # res = json.loads(response.data.decode('utf-8'))
+        # courses = res["courses"]
+        # for course in courses:
+        #     assert course.id != "COR002", "course ID is "+str(course.id)
+
 
     #test get all LJ
     def test_get_all_LJ(self,client, create_ljs):
@@ -41,7 +58,6 @@ class TestLJ:
             assert res["role_id"] == lj.role_id
             assert len(res["courses"]) == 2
 
-    #test view courses in LJ
 
     #test view courses in LJ that has yet to be added to LJ
     def test_get_eligible_courses_not_in_LJ(self,client, create_ljs):
