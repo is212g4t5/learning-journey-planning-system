@@ -81,11 +81,10 @@ DROP TABLE IF EXISTS `learning_journey`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `learning_journey` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `staff_id` int NOT NULL,
   `role_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
   KEY `staff_id` (`staff_id`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `learning_journey_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`),

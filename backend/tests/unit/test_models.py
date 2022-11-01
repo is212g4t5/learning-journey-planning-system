@@ -23,6 +23,7 @@ def test_learning_journey_model():
     assert learning_journey.name == 'test_learning_journey'
     assert learning_journey.staff_id == 1
     assert learning_journey.role_id == 1
+    # assert learning_journey.courses ==[]
 
 #unit test for RegistrationModel
 def test_registration_model():

@@ -7,8 +7,10 @@ const routes = [
       { path: 'login', component: () => import('src/pages/LoginPage.vue') },
       { path: 'HR', component: () => import('pages/HRManagement_Page.vue') },
       { path: 'learning_journey/:role', component: () => import('src/pages/LearningJourneyPage.vue') },
+      { path: 'learning_journey/:role/:id', component: () => import('src/pages/LearningJourneyPageDetails.vue') },
       { path: 'Jobs', component: () => import('pages/JobsPage.vue') },
-      { path: 'courses/:skillId', component: () => import('pages/ViewCoursesPage.vue') },
+      { path: 'courses/:jobId/:skillId', component: () => import('pages/ViewCoursesPage.vue') },
+      { path: 'filtered_courses/:LJ_id', component: () => import('pages/ViewFilteredCoursesPage.vue') },
       { path: 'JobDetails/:id', component: () => import('pages/JobDetailsPage.vue') },
     ]
   },

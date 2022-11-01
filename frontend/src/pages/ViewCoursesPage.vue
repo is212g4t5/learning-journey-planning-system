@@ -21,12 +21,14 @@
         class="text-center font-700"
         style="color: #525252; font-size: 28px; "
       >
-        Reccomended Courses
+        Recommended Courses
       </div>
       <div
         class="q-mx-auto q-mb-lg"
         style="background-color: #a8a8ff; width: 75px; height: 2px"
       ></div>
+
+      <q-btn v-if="selection.length>0" label="Create Learning Journey" color="primary" class="absolute" style="right:40px; top:75px" @click="createLJ = !createLJ"></q-btn>
 
 
       <div class="text-center" v-if="coursesWithSkill.length==0">
@@ -56,10 +58,16 @@
                 </div>
                 </div>
 
-                <div class="q-mt-md">
-                <q-icon name="place" size="sm" style="color:#96BB7C"></q-icon>
-                {{course.type}}
+                <div class="q-mt-md flex justify-between items-center" style="width:300px">
+                  <div class="">
+                    <q-icon name="place" size="sm" style="color:#96BB7C"></q-icon>
+                    {{course.type}}
+                  </div>
+                 
+                  <q-checkbox v-model="selection" :val="course.id" label="Select course" color="green" />
                 </div>
+
+               
            </div>
           
 
@@ -73,6 +81,54 @@
 
 
     </div>
+
+     <!-- add skill dialog -->
+     <q-dialog v-model="createLJ">
+          <q-card class="q-pa-md" style="width:50vw">
+            <div class="text-center font-700" style="color:#525252; font-size:28px">Create Learning Journey</div>
+            <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+           
+
+            
+            <div class="q-mx-md">
+              Do you want to create learning joruney for <strong>{{this.jobData.name}}</strong>?
+              <br>
+              Courses that will be added to learning journey: <span v-for="course in selection" :key="course"> <strong>{{course}} </strong> </span>
+            </div>
+            
+
+            <q-card-actions align="right" class="q-mt-sm">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn  label="Create Learning Journey" color="primary" @click="handleCreate()"/>
+            </q-card-actions>
+
+            
+          </q-card>
+        </q-dialog>
+
+
+        <q-dialog v-model="fail">
+          <q-card class="q-pa-md" style="width:50vw">
+            <div class="text-center font-700" style="color:#525252; font-size:28px">Failed to Create Learning Journey!</div>
+            <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+           
+
+            
+            <div class="text-center">
+              Learning Journey for {{this.jobData.name}} already exists for this user. 
+            </div>
+            
+
+            <q-card-actions align="right" class="q-mt-sm">
+              <q-btn  label="close" color="primary" v-close-popup />
+             
+            </q-card-actions>
+
+            
+          </q-card>
+        </q-dialog>
     
   </q-page>
 </template>
@@ -87,17 +143,53 @@ export default {
       currSkillInfo:{},
       coursesWithSkill:[],
       currSkillId:'',
+      currJobId:'',
+      jobData:{},
       defaultOptions: {
         animationData: animationData.default,
         loop:true,
-        autoplay:true
+        autoplay:true,
       },
+      fail:false,
+
+      selection:[],
+      createLJ:false
     }
   },
   components: {
     Lottie
   },
   methods: {
+    async handleCreate(){
+      console.log('input to post',{
+        name:"Learning Journey - " + this.jobData.name,
+        staff_id:this.$store.state.userData.id,
+        role_id:Number(this.currJobId),
+        course_ids:this.selection
+      })
+
+      try{
+        let createLJ_res = await axios.post("http://127.0.0.1:5000/api/learning_journeys/create",{
+          name:"Learning Journey - " + this.jobData.name,
+          staff_id:this.$store.state.userData.id,
+          role_id:Number(this.currJobId),
+          course_ids:this.selection
+        });
+
+        console.log(createLJ_res.data)
+
+        this.$router.push(`/learning_journey/${localStorage.token}`)
+
+      }catch(err){
+        console.log(err, 'failed to add to db')
+        this.fail = true
+      }
+  
+
+      
+
+
+    }
   },
   async mounted(){
     // console.log('vuex user',this.$store.state.user)
@@ -106,11 +198,15 @@ export default {
     //   this.$router.push('/login')
     // }
 
+    console.log('USE DATA FROM COURSES PAGE:',this.$store.state.userData)
+
+
 
     let courseData = await axios.get("http://127.0.0.1:5000/api/courses/active/skills");
     console.log('active course data', courseData.data)
 
-    
+    this.currJobId =  this.$route.params.jobId
+
     let currSkillId = this.$route.params.skillId
     this.currSkillId = currSkillId
 
@@ -128,23 +224,25 @@ export default {
         }
     });
 
-    console.log('all courses with skill:',coursesWithSkill)
-    console.log('current skill details:',currSkillInfo)
-
     this.coursesWithSkill = coursesWithSkill
 
-
     let allSkills = await axios.get("http://127.0.0.1:5000/api/skills");
-
-    console.log('all skill data:', allSkills)
     allSkills.data.forEach(element => {
       if (element.id == currSkillId){
         this.currSkillInfo = element
       }
     });
 
-    // this.currSkillInfo = currSkillInfo
-    console.log()
+
+    let roleData = await axios.get("http://127.0.0.1:5000/api/roles");
+    console.log('JOB ROLE DATA', roleData.data)
+    roleData.data.forEach((element) => {
+      if (element.id == this.currJobId) {
+        this.jobData = element
+      }
+    });
+
+
    
     
   }

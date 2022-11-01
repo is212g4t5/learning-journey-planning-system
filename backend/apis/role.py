@@ -41,12 +41,16 @@ def get_roles():
 @role_api.route('/<id>', methods=['GET'])
 def get_role(id):
     role = Role.query.get(id)
+    if not role:
+        return jsonify({"message": "Role not found"}), 404
     return role_schema.jsonify(role)
 
 #Update a Role
 @role_api.route('/<id>', methods=['PUT'])
 def update_role(id):
     role = Role.query.get(id)
+    if not role:
+        return jsonify({"message": "Role not found"}), 404
 
     name = request.json['name']
     description = request.json['description']
@@ -64,6 +68,8 @@ def update_role(id):
 @role_api.route('/<id>', methods=['DELETE'])
 def delete_role(id):
     role = Role.query.get(id)
+    if not role:
+        return jsonify({"message": "Role not found"}), 404
     role.active = False
     db.session.commit()
 
@@ -80,10 +86,14 @@ def get_roles_with_skills():
 @role_api.route('/<id>/skills', methods=['PUT'])
 def update_skills_for_role(id):
     role = Role.query.get(id)
+    if not role:
+        return jsonify({"message": "Role not found"}), 404
     skill_ids = request.json['skill_ids']
     role.skills = []
     for skill_id in skill_ids:
         skill = Skill.query.get(skill_id)
+        if not skill:
+            return jsonify({"message": "Skill not found"}), 404
         role.skills.append(skill)
    
     db.session.commit()
@@ -95,4 +105,6 @@ def update_skills_for_role(id):
 @role_api.route('/<id>/skills', methods=['GET'])
 def get_role_with_skills(id):
     role = Role.query.get(id)
+    if not role:
+        return jsonify({"message": "Role not found"}), 404
     return role_with_skills_schema.jsonify(role)

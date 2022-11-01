@@ -89,8 +89,7 @@
          <div class="" style="font-size:18px">Staff email</div>
          <q-input v-model="email" outlined placeholder="Enter Staff Email" />
 
-         <div class="q-mt-md" style="font-size:18px">Password</div>
-         <q-input v-model="password" type="password" outlined placeholder="Enter Staff Email" class="q-mb-md" />
+
         </q-card-section>
 
         <q-card-actions >
@@ -110,24 +109,38 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   methods: {
     login(user){
       this.loginDialog = true
       this.user = user
     },
-    handleRedirect(){
-      if (this.user == 'Human Resource'){
+    async handleRedirect(){
+      let loginRes = await axios.post("http://127.0.0.1:5000/api/staffs/login", 
+      {
+        email:this.email
+      }
+      );
+      localStorage.setItem("userData",loginRes.data)
+      console.log('login response',loginRes.data)
+
+      this.$store.state.userData = loginRes.data
+
+      //id: 1 is admin, 2 or 4 is user, 3 is manager,
+
+      if (this.user == 'Human Resource' && loginRes.data.user_type_id == 1){
 
         localStorage.setItem("token", 'hr')
+        
 
         this.$store.state.user = 'hr'
         this.$router.push('/learning_journey/hr')
-      }else if (this.user == 'Manager'){
+      }else if (this.user == 'Manager' && loginRes.data.user_type_id == 3){
         localStorage.setItem("token", 'manager')
         this.$store.state.user = 'manager'
         this.$router.push('/learning_journey/manager')
-      }else if (this.user == 'Other User'){
+      }else if (this.user == 'Other User' && (loginRes.data.user_type_id == 2 || loginRes.data.user_type_id == 4)){
         localStorage.setItem("token", 'user')
         this.$store.state.user = 'user'
         this.$router.push('/learning_journey/user')
@@ -152,7 +165,7 @@ export default {
       loginDialog:false,
       user:'',
       email:'',
-      password:''
+
     }
   },
   
