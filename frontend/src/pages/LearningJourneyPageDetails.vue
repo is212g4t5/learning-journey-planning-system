@@ -30,7 +30,7 @@
         ></div>
 
 
-
+        <q-btn label="Add Course To Learning Journey" color="primary" no-caps class="addButton absolute" style="right:30px; top:30px;z-index:1" :to="`/filtered_courses/${currUserLearningJourney.id}`" ></q-btn>
 
       <div class="flex items-center justify-around q-mb-md">
         <div v-for="course in currUserLearningJourney.courses" :key="course.id" style="width:350px;height:580px;background:white;border-radius:5px;position:relative;" class="shadow-4">
