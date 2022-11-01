@@ -9,7 +9,7 @@
         />
       </template>
       <q-breadcrumbs-el to="" >{{currUserLearningJourney.name}}</q-breadcrumbs-el>
-      <q-breadcrumbs-el to="">Add Course To Learning Journey</q-breadcrumbs-el>
+      <q-breadcrumbs-el :to="`/learning_journey/${$store.state.user}/${this.$route.params.LJ_id}`">Add Course To Learning Journey</q-breadcrumbs-el>
       <q-breadcrumbs-el to="">View Courses</q-breadcrumbs-el>
     </q-breadcrumbs>
 
@@ -82,6 +82,31 @@
     </div>
 
 
+
+    <q-dialog v-model="addDialog">
+      <q-card class="q-pa-md" style="width:50vw">
+        <div class="text-center font-700" style="color:#525252; font-size:28px">Add Course To Learning Journey</div>
+        <div class="q-mx-auto q-mb-md" style="background-color:#A8A8FF; width:85px;height:2.5px"></div>
+
+        
+
+        
+        <div class="q-mx-md">
+          Are you sure you want to add <strong>{{currentCourse.name}}</strong> to <strong>{{currUserLearningJourney.name}}</strong>?
+          
+        </div>
+        
+
+        <q-card-actions align="right" class="q-mt-sm">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn  label="Add Course to Learning Journey" color="primary" @click="addCourseToDB()"/>
+        </q-card-actions>
+
+        
+      </q-card>
+    </q-dialog>
+
+
   </q-page>
 </template>
 
@@ -93,6 +118,8 @@ export default {
   data () {
     return {
 
+      addDialog:false,
+      currentCourse:{},
       currUserLearningJourney:[],
 
 
@@ -119,13 +146,25 @@ export default {
   methods: {
     async addCourse(course){
       console.log(course)
+      this.currentCourse = course
+
+      this.addDialog = true;
+    },
+
+    async addCourseToDB(){
       await axios.put(`http://127.0.0.1:5000/api/learning_journeys/${this.$route.params.LJ_id}`,
         {
-          course_ids:[course.id]
+          course_ids:[this.currentCourse.id]
         }
       )
 
-      this.$router.go(-1)
+      //reset data
+      let courseData = await axios.get(`http://127.0.0.1:5000/api/learning_journeys/${this.$route.params.LJ_id}?courses_not_in_lj=true`)
+      console.log('relevant courses not in lj',courseData.data)
+      this.coursesWithSkill = courseData.data
+
+      
+      this.addDialog = false
     }
 
     
