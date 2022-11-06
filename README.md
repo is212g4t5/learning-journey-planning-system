@@ -29,7 +29,7 @@ https://nodejs.org/en/
 ## To run automated tests (Pytest):
 0. `pip install pytest` //if not previously installed
 1. `cd backend`
-2. `Pytest tests` or `python -m pytest tests` //run all tests in test folder, `python -m pytest tests/functional` to run files in functional folder only etc.
+2. `Pytest tests` or `python -m pytest tests` //run all tests in test folder, `python -m pytest tests/unit` to run files in unit folder only etc.
 Some important notes:
 - `conftest.py` includes fixtures which can be added as params in test functions, they are typically configurations that are repeatedly used and have scopes `function`,`module`,`session`.
 - each and all test cases should be inside a def test_function() with prefix `test` //test is a identifier keyword in pytest, don't add test_ in front of utility functions
