@@ -1,6 +1,12 @@
 # learning-journey-planning-system
 IS212 SPM G4T5 Learning Journey Planning System (2022 Semester 1)
 
+## Before Starting: 
+Make sure the following requirements are installed on your machine:
+1. Python
+https://www.python.org/downloads/
+2. Node.js
+https://nodejs.org/en/
 
 ## To run the backend file:
 0. `cd backend`
@@ -13,13 +19,19 @@ IS212 SPM G4T5 Learning Journey Planning System (2022 Semester 1)
 5. make sure request handler is up and running 
 6. open Postman
 7. set the method(POST/GET/UPDATE/DELETE etc.) and use the host address, e.g. 127.0.0.1:5000/<api endpoint> from running local server to make a request. make sure any neccessary body is added
+
+## To Load and Run Database: 
+1. Make sure you have WAMP installed (for Windows) or MAMP (for MacOS)
+2. Start WAMP/MAMP and turn it on
+3. Access either localhost/phpmyadmin/ on your browser or MySQLWorkBench and load SQL script from "dumpV3 with LMS data.sql"
+4. Check that data is loaded in the 'ljps' database
   
-## To run automated tests (Pytest) NOT YET MERGED FROM SGPROD-40
-note that this section is still under work due to uncertainties about testing process/configs
+## To run automated tests (Pytest):
+0. `pip install pytest` //if not previously installed
 1. `cd backend`
 2. `Pytest tests` or `python -m pytest tests` //run all tests in test folder, `python -m pytest tests/functional` to run files in functional folder only etc.
 Some important notes:
-- `conftest.py` includes fixtures which can be added as params in test functions, they are typically configurations that are repeatedly used and have scopes `function`,`module`,`session`.`yield` keyword can work as an outlet? //unsure
+- `conftest.py` includes fixtures which can be added as params in test functions, they are typically configurations that are repeatedly used and have scopes `function`,`module`,`session`.
 - each and all test cases should be inside a def test_function() with prefix `test` //test is a identifier keyword in pytest, don't add test_ in front of utility functions
 - db data cleanup is required before/after each test, improper db handling may crash the test on 2nd run or affect other tests. To test get/delete/update, we need to load data into db using db insert methods and NOT post api to add data as it will affect reliability of API test
 - scopes: function = 1 function, module = 1 file, session = entire round of tests.  
